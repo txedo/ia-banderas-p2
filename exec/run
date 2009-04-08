@@ -1,0 +1,2 @@
+#!/bin/bash
+../src/client.py --Ice.Config=../config/config.client

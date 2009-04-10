@@ -1,0 +1,1 @@
+kill -SIGKILL `ps -A | grep client.py | awk '{print $1}'`

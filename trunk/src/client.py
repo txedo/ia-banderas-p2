@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import psyco
+
 import Ice, sys, time
 
 Ice.loadSlice('-I/usr/share/slice ../slice/Practica.ice')
@@ -11,6 +13,7 @@ class Client (Ice.Application):
 
     def run(self, argv):
         
+        psyco.full()
         base = self.communicator().stringToProxy("AutenticacionObject")
 
         autenticacion = Practica.AutenticacionPrx.checkedCast(base)
@@ -41,7 +44,7 @@ class Client (Ice.Application):
             devuelto = partida.jugada(tablero.idUsuario, jugador, movimiento, infoJugada.token)
             print "Movimiento realizado: " + str(devuelto)
 
-        val = int(raw_input("Introduzca un valor entero para continuar "))
+        raw_input("Presione ENTER para continuar...")
 
         tablero = partida.obtenerMapa("71219116")
         print tablero
@@ -65,6 +68,6 @@ class Client (Ice.Application):
         
         print "Han finalizado las dos partidas"
         time.sleep(3)
-#        ret = autenticacion.finalizarPartida("71219116","asdfqwer")
+        ret = autenticacion.finalizarPartida("71219116","asdfqwer")
 
 Client().main(sys.argv)

@@ -3,13 +3,12 @@ from config import PROF_INICIAL
 class Nodo:
 
 
-    def __init__ (self, estado, padre=None, accion=None, profundidad=PROF_INICIAL, g=0, f=0):
+    def __init__ (self, estado, padre=None, accion=None, profundidad=PROF_INICIAL, utilidad=-INFINITO):
         self.estado = estado # Tipo estado
         self.padre = padre # Tipo nodo
         self.accion = accion # Tupla (jugador, accion)
         self.profundidad = profundidad # Tipo entero
-        self.g = g # Tipo entero. Coste para llegar desde el inicio hasta el nodo actual
-        self.f = f # Tipo entero. Coste total estimado para llegar desde el incio hasta el estado objetivo (Solo en A*)
+        self.utilidad = utilidad
         
         
     def repetidoEnRama (self):
@@ -26,7 +25,7 @@ class Nodo:
         
 
     def __cmp__(self, other):
-        return cmp(self.f, other.f)
+        return cmp(self.utilidad, other.utilidad)
 
 
     def __eq__(self, other):

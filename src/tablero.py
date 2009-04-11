@@ -6,31 +6,31 @@ class Tablero:
     def __init__ (self, casillas=[], banderas=0):
         self.casillasModificadas = casillas[:]
         self.banderas=banderas
-        
-
+    
+    
     def getCasillasModificadas(self):
         return self.casillasModificadas
-        
+    
     
     def setCasillasModificadas(self, seq):
         self.casillasModificadas.extend(seq)
-        
+    
     
     def eliminarCasillaModificada(self, casilla):
         self.casillasModificadas.remove(casilla)
-        
-        
+    
+    
     def anadirCasillaModificada(self, casilla):
         self.casillasModificadas.append(casilla)
-
-
+    
+    
     def __casillasVecinas (self, casilla):
         """ RECIBE un entero que es el identificador de la casilla para la cual
         queremos encontrar las vecinas.
             DEVUELVE una lista con los identificadores de las casillas vecinas
         dada una casilla en un tablero de casillas hexagonales
         """
-
+        
         casillasVecinas = [-1, -1, -1, -1, -1, -1]
         columnas = global_vars.columnasTablero
         filas = global_vars.filasTablero
@@ -102,8 +102,8 @@ class Tablero:
                 casillasVecinas[4] = casilla + columnas - 1
                 casillasVecinas[5] = casilla - 1
         return casillasVecinas
-        
-        
+    
+    
     def casillasVecinas (self, casillasActuales, casilla):
         """ RECIBE la lista de casillas actuales del tablero y el identificador
         de la casilla de la cual queremos obtener las casillas vecinas.
@@ -117,8 +117,8 @@ class Tablero:
             cas = Casilla (i, casillasActuales[i - 1].getTipo())
             casillasVecinas.append (cas)
         return casillasVecinas
-        
-        
+    
+    
     def casillasVecinasActuales (self, idCasilla):
         """ RECIBE el identificador de la casilla sobre la cual queremos calcular
         las casillas vecinas actuales.
@@ -137,20 +137,19 @@ class Tablero:
                 cas.setTipo(self.casillasModificadas[indice].getTipo())
             casillasVecinas.append(cas)
         return casillasVecinas
-        
-
-
+    
+    
     def tableroActual (self):
         """ DEVUELVE una lista con las casillas del tablero actual """
         casillas = global_vars.casillasIniciales[:]
         for i in range(len(self.getCasillasModificadas())):
             casillas[self.casillasModificadas[i].getIdCasilla()-1] = self.casillasModificadas[i]
         return casillas
-        
-        
+    
+    
     def __contains__(self, element):
         return element in self.casillasModificadas
-        
+    
     
     def __eq__(self, other):
         return self.casillasModificadas==other.casillasModificadas

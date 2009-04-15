@@ -17,10 +17,10 @@ from equipo import *
 def Inicializar(mapa, equipos, tablero):
     # ID de usuario, MIN y MAX
     global_vars.idUsuario = mapa.idUsuario
-    if mapa.idUsuario == 1:
+    if mapa.idUsuario == 1 or mapa.idUsuario == 3:
         global_vars.MAX = 0
         global_vars.MIN = 1
-    else:
+    elif mapa.idUsuario == 2 or mapa.idUsuario == 4:
         global_vars.MAX = 1
         global_vars.MIN = 0
     # Filas y columnas del tablero
@@ -89,6 +89,9 @@ class Client (Ice.Application):
         raw_input("Presione ENTER para continuar...")
 
         mapa = partida.obtenerMapa("71219116")
+        equipos = []
+        tablero = Tablero()
+        Inicializar (mapa, equipos, tablero)
         print mapa
         
         while True:
@@ -110,6 +113,6 @@ class Client (Ice.Application):
         
         print "Han finalizado las dos partidas"
         time.sleep(3)
-        ret = autenticacion.finalizarPartida("71219116","asdfqwer")
+        #ret = autenticacion.finalizarPartida("71219116","asdfqwer")
 
 Client().main(sys.argv)

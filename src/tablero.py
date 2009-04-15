@@ -24,7 +24,7 @@ class Tablero:
         self.casillasModificadas.append(casilla)
     
     
-    def __casillasVecinas (self, casilla):
+    def IdCasillasVecinas (self, casilla):
         """ RECIBE un entero que es el identificador de la casilla para la cual
         queremos encontrar las vecinas.
             DEVUELVE una lista con los identificadores de las casillas vecinas
@@ -102,6 +102,19 @@ class Tablero:
                 casillasVecinas[4] = casilla + columnas - 1
                 casillasVecinas[5] = casilla - 1
         return casillasVecinas
+        
+        
+    def casillaActual (self, idCasilla):
+        """ RECIBE un identificador de casilla
+            DEVUELVE un objeto casilla con su identificador y tipo actual
+        """
+        cas = copy.deepcopy(global_vars.casillasIniciales[idCasilla-1])
+        # Si la casilla NO es una muralla, miramos si ha sido modificada
+        if cas.getTipo() != T_MURALLA:
+            if cas in self.casillasModificadas:
+                indice = self.casillasModificadas.index(cas)
+                cas.setTipo(self.casillasModificadas[indice].getTipo())
+        return cas
     
     
     def casillasVecinas (self, casillasActuales, casilla):
@@ -110,7 +123,7 @@ class Tablero:
             DEVUELVE las 6 casillas vecinas en el tablero actual
         """
         # Obtenemos los identificadores de las casillas vecinas
-        idVecinas = self.__casillasVecinas(casilla)
+        idVecinas = self.idCasillasVecinas(casilla)
         # Construimos las casillas vecinas actuales
         casillasVecinas = []
         for i in idVecinas:
@@ -127,7 +140,7 @@ class Tablero:
             llamar a casillasVecinas.
         """
         # Obtenemos los identificadores de las casillas vecinas
-        idVecinas = self.__casillasVecinas(idCasilla)
+        idVecinas = self.idCasillasVecinas(idCasilla)
         # Construimos las casillas vecinas actuales
         casillasVecinas = []
         for i in idVecinas:
@@ -145,6 +158,42 @@ class Tablero:
         for i in range(len(self.getCasillasModificadas())):
             casillas[self.casillasModificadas[i].getIdCasilla()-1] = self.casillasModificadas[i]
         return casillas
+    
+    
+    def __WayTrackingBack (self, k, idCasillaDestino, calculadas, casillasTablero, distancias):
+        if calculadas == filas*columnas: return
+        else:
+            for i in range(len(distancias)):
+                if distancias[i] == k:
+                    adyacentes = self.casillasVecinasActuales(i+1)
+                    for j in adyacentes:
+                        if j.tipo != T_MURALLA and distancias[j.idCasilla - 1] > k+1:
+                            distancias[j.idCasilla - 1] = k+1
+                            calculadas += 1
+            self.__WayTrackingBack (k+1, idCasillaDestino, calculadas, casillasTablero, distancias)
+     
+     
+    def WayTracking (self, idCasillaDestino):
+        columnas = global_vars.columnasTablero
+        filas = global_vars.filasTablero
+        casillas = global_vars.casillasIniciales[:]
+        # Inicializo la lista de distancias a INFINITO
+        distancias = []
+        for i in range(filas*columnas):
+            distancias.append(INFINITO)
+            #casillas.append(Casilla(i+1,1))                            #test
+        #ponerMurallas(casillas)                                        #test
+        # Etiqueto la casilla de la bandera con distancia 0
+        calculadas = 1
+        distancias[idCasillaDestino-1] = 0
+        # Etiqueto las murallas con distancia -1
+        for i in casillas:
+            if i.tipo == T_MURALLA:
+                distancias[i.idCasilla-1] = -1
+                calculadas += 1
+        #Imprimir (distancias)                                                   #test
+        self.__WayTrackingBack(0, idCasillaDestino, calculadas, casillas, distancias)
+        return distancias
     
     
     def __contains__(self, element):

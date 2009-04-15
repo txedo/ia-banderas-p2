@@ -41,7 +41,12 @@ class Jugador:
         
         
     def perderEnergia (self, valor):
-        self.energia = self.energia - valor
+        energiaActual = self.energia - valor
+        if energiaActual > 0:
+            self.energia = energiaActual
+            return True
+        else:
+            return False
         
         
     def getHacha (self):
@@ -58,12 +63,16 @@ class Jugador:
             DEVUELVE True si ha utilizado el hacha y False si no la ha utilizado
         """
         if self.getHacha() > 0:
-            self.perderEnergia(4)
-            self.setHacha(self.getHacha() - 1)
-            return True
+            if self.perderEnergia(4):
+                self.setHacha(self.getHacha() - 1)
+                return (True, True) # Se mueve y usa el hacha
+            else:
+                return (False, False) # No se puede mover asi que no usa el hacha
         else:
-            self.perderEnergia(8)
-            return False
+            if self.perderEnergia(8):
+                return (True, False) # Se mueve y no usa el hacha
+            else:
+                return (False, False) # No se puede mover y no tiene hacha
     
     
     def cogerHacha (self):

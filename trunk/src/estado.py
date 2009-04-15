@@ -24,20 +24,21 @@ class Estado:
         """
         equipoActor = self.equipos[eq]
         jugadorActor = self.equipos[eq].jugadores[jug]
+        accionEjecutada = True
         if jugadorActor.getCasilla() <> casillaDestino.getIdCasilla(): # El jugador se mueve
             self.equipos[eq].jugadores[jug].setCasilla(casillaDestino.getIdCasilla())
             # Dirty indica si es necesario actualizar las casillas modificadas del tablero
             dirty = 0
             if casillaDestino.getTipo() == T_HIERBA:
-                jugadorActor.perderEnergia(1)
+                accionEjecutada = jugadorActor.perderEnergia(1)
             elif casillaDestino.getTipo() == T_AGUA:
-                jugadorActor.usarBarca()
+                accionEjecutada = jugadorActor.usarBarca()
             elif casillaDestino.getTipo() == T_BARRO:
-                jugadorActor.perderEnergia(2)
+                accionEjecutada = jugadorActor.perderEnergia(2)
             elif casillaDestino.getTipo() == T_HOYO:
-                jugadorActor.perderEnergia(4)
+                accionEjecutada = jugadorActor.perderEnergia(4)
             elif casillaDestino.getTipo() == T_ZANJA:
-                jugadorActor.perderEnergia(6)
+                accionEjecutada = jugadorActor.perderEnergia(6)
             elif casillaDestino.getTipo() == T_BANDERA:
                 dirty = 1
                 jugadorActor.cogerBandera()
@@ -56,7 +57,8 @@ class Estado:
                 dirty = 1
                 jugadorActor.cogerPala()
             elif casillaDestino.getTipo() == T_BOSQUE:
-                if jugadorActor.usarHacha(): dirty = 1
+                (accionEjecutada, hacha) = jugadorActor.usarHacha()
+                if accionEjecutada and hacha: dirty = 1
             # Si el dirty bit vale 1, actualizamos la casilla
             if dirty == 1:
                  casillaDestino.convertirHierba()
@@ -67,8 +69,9 @@ class Estado:
                     self.tablero.eliminarCasillaModificada(casillaDestino)
                 casillaDestino.cavar()
                 self.tablero.anadirCasillaModificada(casillaDestino)
-            else: # El jugador NO tiene pala, pero hace la accion de usarla
-                pass
+            else: # El jugador NO tiene pala, por lo que no puede ejecutar la accion
+                accionEjecutada = False
+        return accionEjecutada
             
     
     def __eq__(self, other):

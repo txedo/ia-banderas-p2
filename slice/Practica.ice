@@ -12,6 +12,10 @@ module Practica {
        exception PasswordIncorrectaError extends ErrorBase {
             
        };
+       
+       exception TokenIncorrectoError extends ErrorBase {
+
+       };
 
 
        exception NoExisteContrincanteError extends ErrorBase {
@@ -65,7 +69,7 @@ module Practica {
        };
        
        interface Partida {       
-	 bool jugada(int idUsuario, int idJugador, int idCasilla, int token) throws MovimientoIncorrectoError;
+	 bool jugada(int idUsuario, int idJugador, int idCasilla, int token) throws MovimientoIncorrectoError, TokenIncorrectoError;
 	 Mapa obtenerMapa(string dni) throws MapaNoExisteError;
 	 InfoJugada pedirTurno (int idUsuario);	 
        };

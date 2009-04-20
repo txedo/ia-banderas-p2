@@ -1,9 +1,12 @@
-from config import PROF_INICIAL
+from config import *
+import psyco
+
+psyco.full()
 
 class Nodo:
 
 
-    def __init__ (self, estado, padre=None, accion=None, profundidad=PROF_INICIAL, utilidad=-INFINITO):
+    def __init__ (self, estado, padre=None, accion=(-1,-1), profundidad=PROF_INICIAL, utilidad=-INFINITO):
         self.estado = estado # Tipo estado
         self.padre = padre # Tipo nodo
         self.accion = accion # Tupla (jugador, accion)

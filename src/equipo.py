@@ -1,4 +1,7 @@
 from jugador import *
+import psyco
+
+psyco.full()
 
 
 class Equipo:

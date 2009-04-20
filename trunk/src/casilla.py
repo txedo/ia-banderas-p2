@@ -1,5 +1,7 @@
 from config import *
+import psyco
 
+psyco.full()
 
 class Casilla:
     def __init__ (self, idCasilla, tipo):

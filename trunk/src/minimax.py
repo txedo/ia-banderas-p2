@@ -1,39 +1,47 @@
-import copy, psyco, time
+import copy, psyco, time, global_vars, math
+from config import *
+from nodo import *
 
 
 psyco.full()
 
 
-class MiniMax:
+class Minimax:
     def __init__(self, nodo_inicial):
         self.nodoInicial = nodo_inicial
         self.nodoMejor = copy.deepcopy(nodo_inicial)
         self.timeout = False
         
         
-    def Sync (self, tiempo):
-        time.sleep(tiempo)
+    def Sync (self):
+        tiempo = 0
+        self.timeout = False
+        while tiempo < global_vars.deadline - SECURITY_RANGE:
+            time.sleep(TIME_INCREMENT)
+            tiempo += TIME_INCREMENT
         self.timeout = True
+        print "Tiempo: %f" % (tiempo)
     
     
-    def decision-minimax():
+    def decision_minimax(self):
         limite = 0
         # TODO poner otra condicin por si la busqueda finaliza antes que el timeout
         while not self.timeout:
-            max-valor(self.nodoInicial, limite, -INFINITO, INFINITO)
+            print limite
+            self.max_valor(self.nodoInicial, limite, -INFINITO, INFINITO)
             limite += 1
     
     
-    def max-valor(nodo, limite, alfa, beta):
-        if test-terminal (nodo, limite, global_vars.MAX):
-            return evaluacion()
+    def max_valor(self, nodo, limite, alfa, beta):
+        if self.test_terminal (nodo, limite, global_vars.MAX):
+            return self.evaluacion(nodo, global_vars.MAX, global_vars.MIN)
         else:
             v = -INFINITO
-            sucesores = expandir (nodo, global_vars.MAX)
+            sucesores = self.expandir (nodo, global_vars.MAX)
             
             i = 0
             while not self.timeout and i < len(sucesores):
-                v = max(v, min-valor (sucesores[i], alfa, beta))
+                v = max(v, self.min_valor (sucesores[i], limite, alfa, beta))
                 #if not timeout????
                 if v >= beta:
                     return v
@@ -41,7 +49,7 @@ class MiniMax:
                 # Asignamos al nodo MAX el mayor valor de utilidad de sus hijos
                 #nodo.utilidad = v
                 # Elegimos el mejor nodo de profundidad 1 (primer movimiento de MAX)
-                if nodo.profundidad == config.PROF_INICIAL:
+                if nodo.profundidad == PROF_INICIAL:
                     #if nodo > self.nodoMejor: self.nodoMejor = copy.deepcopy(sucesores[i])
                     if v > self.nodoMejor.utilidad:
                         self.nodoMejor = copy.deepcopy(sucesores[i])
@@ -51,16 +59,16 @@ class MiniMax:
             return v
     
     
-    def min-valor():
-        if test-terminal (nodo, limite, global_vars.MIN):
-            return evaluacion()
+    def min_valor(self, nodo, limite, alfa, beta):
+        if self.test_terminal (nodo, limite, global_vars.MIN):
+            return self.evaluacion(nodo, global_vars.MIN, global_vars.MAX)
         else:
             v = INFINITO
-            sucesores = expandir (nodo, global_vars.MIN)
+            sucesores = self.expandir (nodo, global_vars.MIN)
             
             i = 0
             while not self.timeout and i < len(sucesores):
-                v = min(v, max-valor (sucesores[i], alfa, beta))
+                v = min(v, self.max_valor (sucesores[i], limite, alfa, beta))
                 #if not timeout????
                 if v <= alfa:
                     return v
@@ -72,15 +80,16 @@ class MiniMax:
                     
                     
     
-    def expandir(nodo, equipo):
+    def expandir(self, nodo, equipo):
         sucesores = []
         numero_jugadores = len(nodo.estado.equipos[equipo].jugadores)
         for jug in range(numero_jugadores):
             if nodo.estado.equipos[equipo].jugadores[jug].getEnergia() > 0:
                 casillasVecinas = nodo.estado.tablero.casillasVecinasActuales(nodo.estado.equipos[equipo].jugadores[jug].getCasilla())
-                # Añadimos la casilla actual para hacer hoyos
-                casillasVecinas.append(nodo.estado.tablero.casillaActual(nodo.estado.equipos[equipo].jugadores[jug].getCasilla()))
-                for mov in range (idCasillasVecinas):
+                # ANadimos la casilla actual para hacer hoyos
+                if nodo.estado.equipos[equipo].jugadores[jug].pala > 0:
+                    casillasVecinas.append(nodo.estado.tablero.casillaActual(nodo.estado.equipos[equipo].jugadores[jug].getCasilla()))
+                for mov in range (len(casillasVecinas)):
                     # Comprobamos que sea la misma casilla o, si es distinta casilla que no sea muralla
                     #es decir, comprobamos que si nos movemos, la casilla destino NO sea una muralla
                     if casillasVecinas[mov].getIdCasilla() == nodo.estado.equipos[equipo].jugadores[jug].getCasilla() or casillasVecinas[mov].getTipo() != T_MURALLA:
@@ -92,7 +101,7 @@ class MiniMax:
         return sucesores
     
     
-    def test-terminal (nodo, limite, equipo):
+    def test_terminal (self, nodo, limite, equipo):
         terminal = False
         # Comprueba si quedan banderas en el tabero, si se ha llegado a la profundidad
         #de corte (prof. iterativa) o si se ha acabado el tiempo
@@ -105,5 +114,39 @@ class MiniMax:
         return terminal
 
     
-    def evaluacion():
-        #tiene que guardar la utilidad en nodo.utilidad
+    def evaluacion(self, nodo, equipo1, equipo2):
+        estado = nodo.estado
+        totalBanderas = len(global_vars.banderasObjetivo)
+        
+        bandEq1 = estado.equipos[equipo1].banderasCapturadas
+        bandEq2 = estado.equipos[equipo2].banderasCapturadas
+        
+        """ratioBandEq1 = bandEq1*totalBanderas#/totalBanderas
+        ratioBandEq2 = bandEq2*totalBanderas#/totalBanderas
+        ratioBand = ratioBandEq1 - ratioBandEq2
+        ratioBand = ratioBand * 20
+        
+        filas = global_vars.filasTablero
+        columnas = global_vars.columnasTablero
+        
+        bondadDist = max(columnas,filas)/2
+        (x,y,distEq1) = estado.minimaDistancia(equipo1)
+        #print "distEq1: ", distEq1
+        (x,y,distEq2) = estado.minimaDistancia(equipo2)
+        #print "distEq2: ", distEq2
+        ratioDistEq1 = max(columnas,filas) * math.exp((-1/bondadDist)*distEq1)
+        #print "ratioDistEq1: ", ratioDistEq1
+        ratioDistEq2 = max(columnas,filas) * math.exp((-1/bondadDist)*distEq2)
+        #print "ratioDistEq2: ", ratioDistEq2
+        ratioDist = ratioDistEq1 - ratioDistEq2
+        #raw_input()
+        evalEq1 = ratioBandEq1 + ratioDistEq1
+        evalEq2 = ratioBandEq2 + ratioDistEq2"""
+        evaluacion = 20 * (bandEq1 - bandEq2)
+        (x,y,distEq1) = estado.minimaDistancia(equipo1)
+        (x,y,distEq2) = estado.minimaDistancia(equipo2)
+        evaluacion += (10 * (1.0/distEq1)) - (10 * (1.0/distEq2))
+        
+        #return ratioBand + ratioDist#evalEq1 - evalEq2
+        return evaluacion
+

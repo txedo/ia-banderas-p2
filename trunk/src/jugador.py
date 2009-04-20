@@ -1,4 +1,7 @@
 import global_vars, config
+import psyco
+
+psyco.full()
 
 class Jugador:
     def __init__ (self, idJugador, equipo, casilla, energia, hacha = 0, barca = 0, pala = 0, banderas = 0, zumo = 0):

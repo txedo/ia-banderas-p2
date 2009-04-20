@@ -1,4 +1,8 @@
 from config import *
+import global_vars
+import psyco
+
+psyco.full()
 
 
 class Estado:
@@ -64,15 +68,41 @@ class Estado:
                  casillaDestino.convertirHierba()
                  self.tablero.anadirCasillaModificada(casillaDestino)
         else: # El jugador no se mueve utiliza la pala
-            if jugadorActor.usarPala(): # El jugador tiene pala para usarla satisfactoriamente
-                if casillaDestino in self.tablero.getCasillasModificadas():
-                    self.tablero.eliminarCasillaModificada(casillaDestino)
-                casillaDestino.cavar()
-                self.tablero.anadirCasillaModificada(casillaDestino)
-            else: # El jugador NO tiene pala, por lo que no puede ejecutar la accion
+            if casillaDestino.getTipo() == T_HIERBA or casillaDestino.getTipo() == T_ZANJA or casillaDestino.getTipo() == T_HOYO: 
+                if jugadorActor.usarPala(): # El jugador tiene pala para usarla satisfactoriamente
+                    if casillaDestino in self.tablero.getCasillasModificadas():
+                        self.tablero.eliminarCasillaModificada(casillaDestino)
+                    casillaDestino.cavar()
+                    self.tablero.anadirCasillaModificada(casillaDestino)
+                else: # El jugador NO tiene pala, por lo que no puede ejecutar la accion
+                    accionEjecutada = False
+            else: # No se puede cavar en la casilla
                 accionEjecutada = False
         return accionEjecutada
-            
+        
+        
+    def minimaDistancia (self, eq):
+        """ RECIBE el identificador de equipo que hay que examinar
+            DEVUELVE una tupla (idJugador, bandera, distancia)
+        """
+        equipo = self.equipos[eq]
+        minimaDistancia = INFINITO
+        jugador = -1
+        bandera = -1
+        for band in global_vars.banderasObjetivo:
+            if self.tablero.casillaActual(band).getTipo() == T_BANDERA:
+                distancias = global_vars.distanciaBanderas[band]
+                for jug in equipo.jugadores:
+                    dist = distancias[jug.casilla-1]
+                    #print "dist del jug %d (casilla %d) a la bandera %d: %d" % (jug.idJugador,jug.casilla,band,dist)
+                    if dist < minimaDistancia:
+                        minimaDistancia = dist
+                        jugador = jug.idJugador
+                        bandera = band
+        #print "min: ", minimaDistancia
+        #raw_input()
+        return (jugador, bandera, minimaDistancia)
+    
     
     def __eq__(self, other):
         return self.tablero==other.tablero and self.jugadores==other.jugadores

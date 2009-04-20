@@ -1,5 +1,8 @@
 from casilla import *
-import global_vars
+import global_vars, copy
+import psyco
+
+psyco.full()
 
 
 class Tablero:
@@ -24,7 +27,7 @@ class Tablero:
         self.casillasModificadas.append(casilla)
     
     
-    def IdCasillasVecinas (self, casilla):
+    def idCasillasVecinas (self, casilla):
         """ RECIBE un entero que es el identificador de la casilla para la cual
         queremos encontrar las vecinas.
             DEVUELVE una lista con los identificadores de las casillas vecinas
@@ -160,7 +163,7 @@ class Tablero:
         return casillas
     
     
-    def __WayTrackingBack (self, k, idCasillaDestino, calculadas, casillasTablero, distancias):
+    def __WayTrackingBack (self, k, idCasillaDestino, calculadas, filas, columnas, casillasTablero, distancias):
         if calculadas == filas*columnas: return
         else:
             for i in range(len(distancias)):
@@ -170,7 +173,7 @@ class Tablero:
                         if j.tipo != T_MURALLA and distancias[j.idCasilla - 1] > k+1:
                             distancias[j.idCasilla - 1] = k+1
                             calculadas += 1
-            self.__WayTrackingBack (k+1, idCasillaDestino, calculadas, casillasTablero, distancias)
+            self.__WayTrackingBack (k+1, idCasillaDestino, calculadas, filas, columnas, casillasTablero, distancias)
      
      
     def WayTracking (self, idCasillaDestino):
@@ -192,7 +195,7 @@ class Tablero:
                 distancias[i.idCasilla-1] = -1
                 calculadas += 1
         #Imprimir (distancias)                                                   #test
-        self.__WayTrackingBack(0, idCasillaDestino, calculadas, casillas, distancias)
+        self.__WayTrackingBack(0, idCasillaDestino, calculadas, filas, columnas, casillas, distancias)
         return distancias
     
     

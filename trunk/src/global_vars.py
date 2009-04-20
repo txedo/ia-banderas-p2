@@ -1,7 +1,9 @@
 idUsuario = -1
 casillasIniciales = []
 banderasObjetivo = [] # ID de la casilla
+distanciaBanderas = {}
 filasTablero = 0
 columnasTablero = 0
 MIN = -1
 MAX = -1
+deadline = 8

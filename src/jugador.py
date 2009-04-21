@@ -12,7 +12,6 @@ class Jugador:
         self.hacha = hacha
         self.barca = barca
         self.pala = pala
-        self.banderas = banderas
 
         
     def getIdJugador (self):
@@ -125,18 +124,6 @@ class Jugador:
         self.setPala(self.getPala() + 10)
         
         
-    def getBanderas (self):
-        return self.banderas
-        
-        
-    def setBanderas (self, valor):
-        self.banderas = valor
-        
-    
-    def cogerBandera (self):
-        self.setBanderas(self.getBanderas() + 1)
-        
-        
     def __str__ (self):
         cadena = "JUGADOR::: ID Jugador: %d\n" % self.getIdJugador()
         cadena += "JUGADOR::: Equipo: %d\n" % self.getEquipo()
@@ -145,13 +132,12 @@ class Jugador:
         cadena += "JUGADOR::: Hacha: %d\n" % self.getHacha()
         cadena += "JUGADOR::: Barca: %d\n" % self.getBarca()
         cadena += "JUGADOR::: Pala: %d\n" % self.getPala()
-        cadena += "JUGADOR::: Banderas: %d\n" % self.getBanderas()
         return cadena
 
 
     def __eq__(self, other):
         if global_vars.algoritmo == config.A_ESTRELLA or global_vars.algoritmo == config.PROFUNDIDAD or global_vars.algoritmo == config.PROFUNDIDAD_ITERATIVA:
-            return self.idJugador==other.idJugador and self.equipo==other.equipo and self.casilla==other.casilla and self.hacha==other.hacha and self.barca==other.barca and self.pala==other.pala and self.banderas==other.banderas
+            return self.idJugador==other.idJugador and self.equipo==other.equipo and self.casilla==other.casilla and self.hacha==other.hacha and self.barca==other.barca and self.pala==other.pala
         elif global_vars.algoritmo == config.ANCHURA:
-            return self.idJugador==other.idJugador and self.equipo==other.equipo and self.casilla==other.casilla and self.energia==other.energia and self.hacha==other.hacha and self.barca==other.barca and self.pala==other.pala and self.banderas==other.banderas
+            return self.idJugador==other.idJugador and self.equipo==other.equipo and self.casilla==other.casilla and self.energia==other.energia and self.hacha==other.hacha and self.barca==other.barca and self.pala==other.pala
 

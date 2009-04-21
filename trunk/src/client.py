@@ -23,11 +23,11 @@ def Inicializar(mapa, equipos, tablero):
     global_vars.distanciaBanderas = {}
     # ID de usuario, MIN y MAX
     global_vars.idUsuario = ((mapa.idUsuario - 1)%2)+1
-    #print "idUsuario %d" % (global_vars.idUsuario)                                      #test
+    print "idUsuario %d" % (global_vars.idUsuario)                                      #test
     global_vars.MAX = global_vars.idUsuario - 1
-    #print "MAX %d" % (global_vars.MAX)                                                  #test
+    print "MAX %d" % (global_vars.MAX)                                                  #test
     global_vars.MIN = (global_vars.MAX + 1)%2
-    #print "MIN %d" % (global_vars.MIN)                                                  #test
+    print "MIN %d" % (global_vars.MIN)                                                  #test
     # Filas y columnas del tablero
     global_vars.filasTablero = mapa.dimy
     global_vars.columnasTablero = mapa.dimx
@@ -71,7 +71,7 @@ class Client (Ice.Application):
     def printHelp(self):
         print "\nEjecucion del cliente para las practicas de IA: \n"
         print "- Para jugar una partida individual ejecutar dos instancias del programa con la linea: ./Client 1 --Ice.Config=(Ruta Archivo .config)\n"
-        print "- Para jugar una competición ejecutar una instancia del programa con la linea: ./Client 2 --Ice.Config=(Ruta Archivo .config)\n  Esperar a que el oponente se una a la partida.\n\n"
+        print "- Para jugar una competicion ejecutar una instancia del programa con la linea: ./Client 2 --Ice.Config=(Ruta Archivo .config)\n  Esperar a que el oponente se una a la partida.\n\n"
 
     def run(self, argv):
         base = self.communicator().stringToProxy("AutenticacionObject")
@@ -108,9 +108,16 @@ class Client (Ice.Application):
             if infoJugada.mov.idJugador <> -1 and infoJugada.mov.mov <> -1:
                 jug = (infoJugada.mov.idJugador-1)%(len(mapa.jugadores)/2)
                 casillas = estado_actual.tablero.idCasillasVecinas(equipos[global_vars.MIN].jugadores[jug].casilla)
-                estado_actual.actualizarEstado(global_vars.MIN, jug, tablero.casillaActual(casillas[infoJugada.mov.mov-1]))
+                nodo_actual.estado.actualizarEstado(global_vars.MIN, jug, tablero.casillaActual(casillas[infoJugada.mov.mov-1]))
+                #print "--------> prof del nodo_actual: ", nodo_actual.profundidad
                 minimax.nodoMejor = copy.deepcopy(nodo_actual)
-                print str(estado_actual.equipos[global_vars.MIN])
+                #print str(estado_actual.equipos[global_vars.MIN])
+            
+            print "ANTES"
+            print "band ", estado_actual.tablero.banderas
+            estado_actual.minimaDistancia(global_vars.MAX, 1)
+            estado_actual.minimaDistancia(global_vars.MIN, 1)
+            #raw_input()
             
             d1 = datetime.datetime.now()
             bella_durmiente = threading.Thread(target=minimax.Sync, args=())
@@ -120,6 +127,9 @@ class Client (Ice.Application):
             bella_durmiente.join()
             #minimax.Sync()
             
+            (jugador, movimiento) = minimax.nodoMejor.accion
+            print "supuesto nodo mejor. Prof: ", minimax.nodoMejor.profundidad
+            print "utilidad de nodoMejor: ", minimax.nodoMejor.utilidad
             (jugador, movimiento) = minimax.nodoMejor.accion
             print datetime.datetime.now()-d1            
             #jugador = int(raw_input("Jugador: "))
@@ -143,10 +153,13 @@ class Client (Ice.Application):
             
             jug = (jugador-1)%(len(mapa.jugadores)/2)
             casillas = estado_actual.tablero.idCasillasVecinas(equipos[global_vars.MAX].jugadores[jug].casilla)
-            estado_actual.actualizarEstado(global_vars.MAX, jug, tablero.casillaActual(casillas[movimiento-1]))
+            nodo_actual.estado.actualizarEstado(global_vars.MAX, jug, tablero.casillaActual(casillas[movimiento-1]))
+            #print "DESPUES"
+            #print "band ", estado_actual.tablero.banderas
+            #estado_actual.minimaDistancia(global_vars.MAX, 1)
+            #estado_actual.minimaDistancia(global_vars.MIN, 1)
             minimax.nodoMejor = copy.deepcopy(nodo_actual)
-            print str(estado_actual.equipos[global_vars.MAX])
-        
+            #print str(estado_actual.equipos[global_vars.MAX])
         
         raw_input("Presione ENTER para continuar...")
 

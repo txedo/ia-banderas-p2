@@ -45,7 +45,6 @@ class Estado:
                 accionEjecutada = jugadorActor.perderEnergia(6)
             elif casillaDestino.getTipo() == T_BANDERA:
                 dirty = 1
-                jugadorActor.cogerBandera()
                 equipoActor.capturarBandera()
                 self.tablero.banderas -= 1
             elif casillaDestino.getTipo() == T_BARCA:
@@ -81,7 +80,7 @@ class Estado:
         return accionEjecutada
         
         
-    def minimaDistancia (self, eq):
+    def minimaDistancia (self, eq, a=0):
         """ RECIBE el identificador de equipo que hay que examinar
             DEVUELVE una tupla (idJugador, bandera, distancia)
         """
@@ -94,12 +93,12 @@ class Estado:
                 distancias = global_vars.distanciaBanderas[band]
                 for jug in equipo.jugadores:
                     dist = distancias[jug.casilla-1]
-                    #print "dist del jug %d (casilla %d) a la bandera %d: %d" % (jug.idJugador,jug.casilla,band,dist)
+                    if a == 1: print "dist del jug %d (casilla %d) a la bandera %d: %d" % (jug.idJugador,jug.casilla,band,dist)
                     if dist < minimaDistancia:
                         minimaDistancia = dist
                         jugador = jug.idJugador
                         bandera = band
-        #print "min: ", minimaDistancia
+        if a == 1: print "min: ", minimaDistancia
         #raw_input()
         return (jugador, bandera, minimaDistancia)
     

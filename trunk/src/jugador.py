@@ -44,7 +44,7 @@ class Jugador:
         
     def perderEnergia (self, valor):
         energiaActual = self.energia - valor
-        if energiaActual > 0:
+        if energiaActual >= 0:
             self.energia = energiaActual
             return True
         else:

@@ -27,9 +27,9 @@ class Minimax:
         limite = 0
         # TODO poner otra condicin por si la busqueda finaliza antes que el timeout
         while not self.timeout:
-            print limite
             self.max_valor(self.nodoInicial, limite, -INFINITO, INFINITO)
             limite += 1
+        print limite
     
     
     def max_valor(self, nodo, limite, alfa, beta):
@@ -83,7 +83,7 @@ class Minimax:
         sucesores = []
         numero_jugadores = len(nodo.estado.equipos[equipo].jugadores)
         for jug in range(numero_jugadores):
-            if nodo.estado.equipos[equipo].jugadores[jug].getEnergia() > 0:
+            if nodo.estado.equipos[equipo].jugadores[jug].getEnergia() >= 0:
                 casillasVecinas = nodo.estado.tablero.casillasVecinasActuales(nodo.estado.equipos[equipo].jugadores[jug].getCasilla())
                 # ANadimos la casilla actual para hacer hoyos
                 if nodo.estado.equipos[equipo].jugadores[jug].pala > 0:
@@ -145,10 +145,8 @@ class Minimax:
         evaluacion = 20 * (bandEq1 - bandEq2)
         (x,y,distEq1) = estado.minimaDistancia(equipo1)
         (x,y,distEq2) = estado.minimaDistancia(equipo2)
-        #print ": ", evaluacion
         evaluacion += (10 * (1.0/distEq1)) - (10 * (1.0/distEq2))
-        #print ":: ", evaluacion
         
-        #return ratioBand + ratioDist#evalEq1 - evalEq2
+        #return evalEq1 - evalEq2
         return evaluacion
 

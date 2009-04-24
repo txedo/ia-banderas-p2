@@ -93,11 +93,16 @@ class Jugador:
         """ Cuando se entra en una casilla de agua se utiliza la barca siempre
         que se tenga. No hay eleccion a utilizarla o no.
         """
+		# Devolvemos si se ha podido mover o no
+        mover = True
         if self.getBarca() > 0:
-            self.perderEnergia(3)
-            self.setBarca(self.getBarca() - 1)
+            mover = self.perderEnergia(3)
+            # Si tiene energia, gasta barca
+            if mover:
+                self.setBarca(self.getBarca() - 1)
         else:
-            self.perderEnergia(6)
+            mover = self.perderEnergia(6)
+        return mover
             
     
     def cogerBarca (self):

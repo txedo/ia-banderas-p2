@@ -21,6 +21,8 @@ def Inicializar(mapa, equipos, tablero):
     global_vars.casillasIniciales = []
     global_vars.banderasObjetivo = []
     global_vars.distanciaBanderas = {}
+    # Tiempo del turno
+    global_vars.deadline = mapa.tiempo
     # ID de usuario, MIN y MAX
     global_vars.idUsuario = ((mapa.idUsuario - 1)%2)+1
     print "idUsuario %d" % (global_vars.idUsuario)                                      #test
@@ -80,8 +82,6 @@ class Client (Ice.Application):
         if not autenticacion:
             print "ERROR"
 
-        global_vars.deadline = input ("Introduce la duracion de cada turno: ")
-
         partida = autenticacion.login("71219116", "asdfqwer")
         print str(partida)
 
@@ -93,6 +93,7 @@ class Client (Ice.Application):
         nodo_actual = Nodo (estado_actual)
         minimax = Minimax(nodo_actual)
         #print mapa
+        print "Tiempo de los turnos configurado en %d segundos." % (global_vars.deadline)
         print "Esperando a que se una otro jugador..."
         
         while True:
@@ -109,9 +110,10 @@ class Client (Ice.Application):
                 jug = (infoJugada.mov.idJugador-1)%(len(mapa.jugadores)/2)
                 casillas = estado_actual.tablero.idCasillasVecinas(equipos[global_vars.MIN].jugadores[jug].casilla)
                 nodo_actual.estado.actualizarEstado(global_vars.MIN, jug, tablero.casillaActual(casillas[infoJugada.mov.mov-1]))
+                print "el otro me ha dejado %d banderas" % (nodo_actual.estado.tablero.banderas)
                 #print "--------> prof del nodo_actual: ", nodo_actual.profundidad
                 minimax.nodoMejor = copy.deepcopy(nodo_actual)
-                #print str(estado_actual.equipos[global_vars.MIN])
+                print str(estado_actual.equipos[global_vars.MIN])
             
             print "ANTES"
             print "band ", estado_actual.tablero.banderas
@@ -159,7 +161,7 @@ class Client (Ice.Application):
             #estado_actual.minimaDistancia(global_vars.MAX, 1)
             #estado_actual.minimaDistancia(global_vars.MIN, 1)
             minimax.nodoMejor = copy.deepcopy(nodo_actual)
-            #print str(estado_actual.equipos[global_vars.MAX])
+            print str(estado_actual.equipos[global_vars.MAX])
         
         raw_input("Presione ENTER para continuar...")
 

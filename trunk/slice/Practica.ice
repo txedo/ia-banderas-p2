@@ -54,6 +54,7 @@ module Practica {
 	 JugadorSeq jugadores;
 	 int dimx;
 	 int dimy;
+	 int tiempo;
        };
        
        struct Movimiento {

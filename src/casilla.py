@@ -33,6 +33,22 @@ class Casilla:
         if self.getTipo() == T_HOYO: self.setTipo (T_ZANJA)
         else:
             if self.getTipo() <> T_ZANJA: self.setTipo (T_HOYO)
+            
+    
+    def coste (self, hacha, barca):
+        if hacha > 0: tieneHacha = True
+        if barca > 0: tieneBarca = True
+        if self.tipo == T_HIERBA or self.tipo == T_BANDERA or self.tipo == T_PALA or self.tipo == T_BARCA or self.tipo == T_HACHA or self.tipo == T_ZUMO:
+            return 1
+        elif self.tipo == T_AGUA:
+            if tieneBarca: return 3
+            else: return 6
+        elif self.tipo == T_BOSQUE:
+            if tieneHacha: return 4
+            else: return 8
+        elif self.tipo == T_BARRO: return 2
+        elif self.tipo == T_HOYO: return 4
+        elif self.tipo == T_ZANJA: return 6
         
      
     def __eq__(self, other):

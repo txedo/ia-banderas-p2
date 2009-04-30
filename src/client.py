@@ -94,6 +94,7 @@ class Client (Ice.Application):
 
             print "Movimiento realizado por el oponente, resultado y token para realizar el movimiento:"
             print infoJugada
+            if infoJugada.mov.idJugador == -1 and infoJugada.mov.mov == -1: infoJugada.resultado = 0 # Apaño basto
             if infoJugada.resultado != 0:
                 if infoJugada.resultado == 1:
                     print "¡Has GANADO!"

@@ -39,7 +39,10 @@ class Jugador:
         
     
     def beberZumo (self):
-        self.energia = self.energia + 20
+        mover = self.perderEnergia(1)
+        if mover:
+            self.energia = self.energia + 20
+        return mover
         
         
     def perderEnergia (self, valor):
@@ -78,7 +81,10 @@ class Jugador:
     
     
     def cogerHacha (self):
-        self.setHacha(self.getHacha() + 20)
+        mover = self.perderEnergia(1)
+        if mover:
+            self.setHacha(self.getHacha() + 20)
+        return mover
         
         
     def getBarca (self):
@@ -106,7 +112,10 @@ class Jugador:
             
     
     def cogerBarca (self):
-        self.setBarca(self.getBarca() + 20)
+        mover = self.perderEnergia(1)
+        if mover:
+            self.setBarca(self.getBarca() + 20)
+        return mover
         
         
     def getPala (self):
@@ -126,7 +135,10 @@ class Jugador:
     
     
     def cogerPala (self):
-        self.setPala(self.getPala() + 10)
+        mover = self.perderEnergia(1)
+        if mover:
+            self.setPala(self.getPala() + 10)
+        return mover
         
         
     def __str__ (self):

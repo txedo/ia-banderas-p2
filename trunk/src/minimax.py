@@ -83,7 +83,7 @@ class Minimax:
         sucesores = []
         numero_jugadores = len(nodo.estado.equipos[equipo].jugadores)
         for jug in range(numero_jugadores):
-            if nodo.estado.equipos[equipo].jugadores[jug].getEnergia() >= 0:
+            if nodo.estado.equipos[equipo].jugadores[jug].getEnergia() > 0:
                 casillasVecinas = nodo.estado.tablero.casillasVecinasActuales(nodo.estado.equipos[equipo].jugadores[jug].getCasilla())
                 # ANadimos la casilla actual para hacer hoyos
                 if nodo.estado.equipos[equipo].jugadores[jug].pala > 0:
@@ -121,10 +121,10 @@ class Minimax:
         bandEq1 = estado.equipos[equipo1].banderasCapturadas
         bandEq2 = estado.equipos[equipo2].banderasCapturadas
         
-        """ratioBandEq1 = bandEq1*totalBanderas#/totalBanderas
+        ratioBandEq1 = bandEq1*totalBanderas#/totalBanderas
         ratioBandEq2 = bandEq2*totalBanderas#/totalBanderas
         ratioBand = ratioBandEq1 - ratioBandEq2
-        ratioBand = ratioBand * 20
+        ratioBand = ratioBand * 200
         
         filas = global_vars.filasTablero
         columnas = global_vars.columnasTablero
@@ -134,19 +134,27 @@ class Minimax:
         #print "distEq1: ", distEq1
         (x,y,distEq2) = estado.minimaDistancia(equipo2)
         #print "distEq2: ", distEq2
-        ratioDistEq1 = max(columnas,filas) * math.exp((-1/bondadDist)*distEq1)
+        ratioDistEq1 = bondadDist * math.exp((-1/(bondadDist/4))*distEq1)
         #print "ratioDistEq1: ", ratioDistEq1
-        ratioDistEq2 = max(columnas,filas) * math.exp((-1/bondadDist)*distEq2)
+        ratioDistEq2 = bondadDist * math.exp((-1/(bondadDist/4))*distEq2)
         #print "ratioDistEq2: ", ratioDistEq2
         ratioDist = ratioDistEq1 - ratioDistEq2
         #raw_input()
-        evalEq1 = ratioBandEq1 + ratioDistEq1
-        evalEq2 = ratioBandEq2 + ratioDistEq2"""
-        evaluacion = 20 * (bandEq1 - bandEq2)
+        
+        ##############
+        # ENERGIA
+        ##############
+        (jug,accion) = nodo.accion
+        equipoExpande = (jug-1)//2
+        energiaEq1 = nodo.estado.equipos[equipoExpande].jugadores[0].energia + nodo.estado.equipos[equipoExpande].jugadores[1].energia
+        ratioEnergiaEq1 = energiaEq1/10
+        
+        evalEq1 = ratioBandEq1 + ratioDistEq1 + ratioEnergiaEq1
+        evalEq2 = ratioBandEq2 + ratioDistEq2
+        """evaluacion = 20 * (bandEq1 - bandEq2)
         (x,y,distEq1) = estado.minimaDistancia(equipo1)
         (x,y,distEq2) = estado.minimaDistancia(equipo2)
-        evaluacion += (10 * (1.0/distEq1)) - (10 * (1.0/distEq2))
-        
-        #return evalEq1 - evalEq2
-        return evaluacion
+        evaluacion += (10 * (1.0/distEq1)) - (10 * (1.0/distEq2))"""
+        return evalEq1 - evalEq2
+        #return evaluacion
 

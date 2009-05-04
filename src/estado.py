@@ -87,7 +87,7 @@ class Estado:
         bloqueado = True
         for i in casillasVecinas:
             if i.tipo != T_MURALLA:
-                if jugador.energia >= i.coste():
+                if jugador.energia >= i.coste(jugador.hacha, jugador.barca):
                     bloqueado = False
                     break
         return bloqueado

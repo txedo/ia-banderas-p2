@@ -36,6 +36,8 @@ class Casilla:
             
     
     def coste (self, hacha, barca):
+        tieneHacha = False
+        tieneBarca = False
         if hacha > 0: tieneHacha = True
         if barca > 0: tieneBarca = True
         if self.tipo == T_HIERBA or self.tipo == T_BANDERA or self.tipo == T_PALA or self.tipo == T_BARCA or self.tipo == T_HACHA or self.tipo == T_ZUMO:

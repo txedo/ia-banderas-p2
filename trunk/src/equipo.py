@@ -34,6 +34,13 @@ class Equipo:
         
     def getJugadores(self):
         return self.jugadores
+        
+        
+    def getEnergiaTotal(self):
+        energiaTotal = 0
+        for i in self.jugadores:
+            energiaTotal += i.energia
+        return energiaTotal
     
     
     def __str__ (self):

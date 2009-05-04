@@ -124,7 +124,7 @@ class Minimax:
         ratioBandEq1 = bandEq1*totalBanderas#/totalBanderas
         ratioBandEq2 = bandEq2*totalBanderas#/totalBanderas
         ratioBand = ratioBandEq1 - ratioBandEq2
-        ratioBand = ratioBand * 200
+        ratioBand = ratioBand * 20000
         
         filas = global_vars.filasTablero
         columnas = global_vars.columnasTablero
@@ -145,11 +145,11 @@ class Minimax:
         # ENERGIA
         ##############
         (jug,accion) = nodo.accion
-        equipoExpande = (jug-1)//2
-        energiaEq1 = nodo.estado.equipos[equipoExpande].jugadores[0].energia + nodo.estado.equipos[equipoExpande].jugadores[1].energia
-        ratioEnergiaEq1 = energiaEq1/10
+        equipoExpande = (jug-1)//len(nodo.estado.equipos[0].jugadores)
+        energiaEq1 = nodo.estado.equipos[equipoExpande].getEnergiaTotal()
+        #ratioEnergiaEq1 = energiaEq1/100
         
-        evalEq1 = ratioBandEq1 + ratioDistEq1 + ratioEnergiaEq1
+        evalEq1 = ratioBandEq1 + ratioDistEq1# + ratioEnergiaEq1
         evalEq2 = ratioBandEq2 + ratioDistEq2
         """evaluacion = 20 * (bandEq1 - bandEq2)
         (x,y,distEq1) = estado.minimaDistancia(equipo1)

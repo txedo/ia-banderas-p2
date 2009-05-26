@@ -21,8 +21,8 @@ def Inicializar(mapa, equipos, tablero):
     global_vars.banderasObjetivo = []
     global_vars.distanciaBanderas = {}
     # Tiempo del turno
-    #global_vars.deadline = mapa.tiempo
-    global_vars.deadline = 3
+    global_vars.deadline = mapa.tiempo
+    #global_vars.deadline = 6
     # ID de usuario, MIN y MAX
     global_vars.idUsuario = ((mapa.idUsuario - 1)%2)+1
     print "idUsuario %d" % (global_vars.idUsuario)                                      #test
@@ -78,6 +78,7 @@ class Client (Ice.Application):
     def jugarPartida(self, dni, partida):
         jugando = True;
         mapa = partida.obtenerMapa(dni)
+        time.sleep(2)
         equipos = []
         tablero = Tablero()
         Inicializar (mapa, equipos, tablero)
@@ -137,12 +138,12 @@ class Client (Ice.Application):
                 #raw_input()
                 
                 d1 = datetime.datetime.now()
-                bella_durmiente = threading.Thread(target=minimax.Sync, args=())
+                #bella_durmiente = threading.Thread(target=minimax.Sync, args=())
                 buscador = threading.Thread(target=minimax.decision_minimax, args=())
-                bella_durmiente.start()
+                #bella_durmiente.start()
                 buscador.start()
-                bella_durmiente.join()
-                #minimax.Sync()
+                #bella_durmiente.join()
+                minimax.Sync()
                 
                 (jugador, movimiento) = minimax.nodoMejor.accion
                 #print "supuesto nodo mejor. Prof: ", minimax.nodoMejor.profundidad
@@ -155,6 +156,7 @@ class Client (Ice.Application):
                 #movimiento = int(raw_input("Movimiento: "))
 
                 try:
+                    print "-------------------->" , minimax.nodoMejor.profundidad
                     devuelto = partida.jugada(mapa.idUsuario, jugador, movimiento, infoJugada.token)
                     print "Movimiento realizado: " + str(devuelto)
                     moviendo = False;
@@ -163,8 +165,8 @@ class Client (Ice.Application):
                     nodo_actual.estado.actualizarEstado(global_vars.MAX, jug, tablero.casillaActual(casillas[movimiento-1]))
                     #print "DESPUES"
                     #print "band ", estado_actual.tablero.banderas
-                    #estado_actual.minimaDistancia(global_vars.MAX, 1)
-                    #estado_actual.minimaDistancia(global_vars.MIN, 1)
+                    #estado_actual.minimaDistancia(global_vars.MAX, [], 1)
+                    #estado_actual.minimaDistancia(global_vars.MIN, [], 1)
                     minimax.nodoMejor = copy.deepcopy(nodo_actual)
                     print str(estado_actual.equipos[global_vars.MAX])
                     for i in tablero.casillasModificadas: print i.idCasilla

@@ -26,6 +26,13 @@ class Nodo:
             actual = actual.padre
         return repetido
         
+        
+    def primerAntecesor(self):
+        actual = self
+        while actual.profundidad > PROF_INICIAL+1:
+            actual = actual.padre
+        return actual
+        
 
     def __cmp__(self, other):
         return cmp(self.utilidad, other.utilidad)

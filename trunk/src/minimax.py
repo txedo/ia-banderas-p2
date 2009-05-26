@@ -1,4 +1,4 @@
-import copy, psyco, time, global_vars, math
+import copy, psyco, time, global_vars, math, random
 from config import *
 from nodo import *
 
@@ -24,7 +24,7 @@ class Minimax:
     
     
     def decision_minimax(self):
-        limite = 0
+        limite = 1
         # TODO poner otra condicin por si la busqueda finaliza antes que el timeout
         while not self.timeout:
             self.max_valor(self.nodoInicial, limite, -INFINITO, INFINITO)
@@ -49,11 +49,14 @@ class Minimax:
             # Asignamos al nodo MAX el mayor valor de utilidad de sus hijos
             #nodo.utilidad = v
             # Elegimos el mejor nodo de profundidad 1 (primer movimiento de MAX)
-            if sucesores[i].profundidad == PROF_INICIAL+1:
+            """if sucesores[i].profundidad == PROF_INICIAL+1:
                 #if nodo > self.nodoMejor: self.nodoMejor = copy.deepcopy(sucesores[i])
                 if v > self.nodoMejor.utilidad:
                     self.nodoMejor = copy.deepcopy(sucesores[i])
-                    self.nodoMejor.utilidad = v
+                    self.nodoMejor.utilidad = v"""
+            if v > self.nodoMejor.utilidad:
+                self.nodoMejor = copy.deepcopy(sucesores[i].primerAntecesor())
+                self.nodoMejor.utilidad = v
             i += 1                        
         return v
     
@@ -115,6 +118,7 @@ class Minimax:
 
     
     def evaluacion(self, nodo, equipo1, equipo2):
+        """
         estado = nodo.estado
         totalBanderas = len(global_vars.banderasObjetivo)
         
@@ -124,7 +128,7 @@ class Minimax:
         ratioBandEq1 = bandEq1*totalBanderas#/totalBanderas
         ratioBandEq2 = bandEq2*totalBanderas#/totalBanderas
         ratioBand = ratioBandEq1 - ratioBandEq2
-        ratioBand = ratioBand * 20000
+        ratioBand = ratioBand * 200
         
         filas = global_vars.filasTablero
         columnas = global_vars.columnasTablero
@@ -139,7 +143,62 @@ class Minimax:
         ratioDistEq2 = bondadDist * math.exp((-1/(bondadDist/4))*distEq2)
         #print "ratioDistEq2: ", ratioDistEq2
         ratioDist = ratioDistEq1 - ratioDistEq2
-        #raw_input()
+        #raw_input()      
+        
+        ##############
+        # ENERGIA
+        ##############
+        #(jug,accion) = nodo.accion
+        #equipoExpande = (jug-1)//len(nodo.estado.equipos[0].jugadores)
+        #energiaEq1 = nodo.estado.equipos[equipoExpande].getEnergiaTotal()
+        #ratioEnergiaEq1 = energiaEq1/100
+        
+        evalEq1 = ratioBandEq1 + ratioDistEq1# + ratioEnergiaEq1
+        evalEq2 = ratioBandEq2 + ratioDistEq2
+
+        ############
+        """
+        """
+        estado = nodo.estado
+        totalBanderas = len(global_vars.banderasObjetivo)
+        
+        bandEq1 = estado.equipos[equipo1].banderasCapturadas
+        bandEq2 = estado.equipos[equipo2].banderasCapturadas
+        
+        ratioBandEq1 = bandEq1*totalBanderas#/totalBanderas
+        ratioBandEq2 = bandEq2*totalBanderas#/totalBanderas
+        ratioBand = ratioBandEq1 - ratioBandEq2
+        ratioBand = ratioBand * 200
+        
+        filas = global_vars.filasTablero
+        columnas = global_vars.columnasTablero
+        
+        bondadDist = max(columnas,filas)/2
+        done = False
+        blacklist = []
+        while not done:
+            (jug1,band1,distEq1) = estado.minimaDistancia(equipo1, blacklist)
+            #print "distEq1: ", distEq1
+            (jug2,band2,distEq2) = estado.minimaDistancia(equipo2, blacklist)
+            #print "distEq2: ", distEq2
+            if (band1 == band2) and (distEq1 > distEq2):
+                blacklist.append(band1)
+                #print "he metido en blacklist la bandera %d porque mi distancia del jugador %d es %d y la del otro jugador %d es %d" % (band1,jug1,distEq1,jug2,distEq2)
+            else:
+                done = True
+            if estado.tablero.banderas == len(blacklist):
+                if len(blacklist) > 0:
+                    white = random.randint(0, len(blacklist)-1)
+                    blacklist.pop(white)
+                    (jug1,band1,distEq1) = estado.minimaDistancia(equipo1, blacklist)
+                    (jug2,band2,distEq2) = estado.minimaDistancia(equipo2, blacklist)
+                done = True
+        ratioDistEq1 = bondadDist * math.exp((-1/(bondadDist/4))*distEq1)
+        #print "ratioDistEq1: ", ratioDistEq1
+        ratioDistEq2 = bondadDist * math.exp((-1/(bondadDist/4))*distEq2)
+        #print "ratioDistEq2: ", ratioDistEq2
+        ratioDist = ratioDistEq1 - ratioDistEq2
+        #raw_input()      
         
         ##############
         # ENERGIA
@@ -151,10 +210,76 @@ class Minimax:
         
         evalEq1 = ratioBandEq1 + ratioDistEq1# + ratioEnergiaEq1
         evalEq2 = ratioBandEq2 + ratioDistEq2
-        """evaluacion = 20 * (bandEq1 - bandEq2)
-        (x,y,distEq1) = estado.minimaDistancia(equipo1)
-        (x,y,distEq2) = estado.minimaDistancia(equipo2)
-        evaluacion += (10 * (1.0/distEq1)) - (10 * (1.0/distEq2))"""
+        """
+        estado = nodo.estado
+        totalBanderas = len(global_vars.banderasObjetivo)
+        
+        bandEq1 = estado.equipos[equipo1].banderasCapturadas
+        bandEq2 = estado.equipos[equipo2].banderasCapturadas
+        
+        ratioBandEq1 = bandEq1*totalBanderas#/totalBanderas
+        ratioBandEq2 = bandEq2*totalBanderas#/totalBanderas
+        ratioBand = ratioBandEq1 - ratioBandEq2
+        ratioBand = ratioBand * 200
+        
+        filas = global_vars.filasTablero
+        columnas = global_vars.columnasTablero
+        
+        bondadDist = ((columnas+filas)/2)*(3/4)
+        done = False
+        blacklist = []
+
+        (jug1,band1,distEq1) = estado.minimaDistancia(equipo1)
+        #print "distEq1: ", distEq1
+        (jug2,band2,distEq2) = estado.minimaDistancia(equipo2)
+        #print "distEq2: ", distEq2
+        
+        # Si el estado no es solucion y aun quedan banderas por coger
+        if not estado.esSolucion():
+            while not done:
+                if (band1 == band2) and (distEq1 > distEq2):
+                    blacklist.append(band1)
+                    # Actualizamos el estado eliminando la bandera que hemos metido en blacklist
+                    cas = estado.tablero.casillaActual(band1)
+                    cas.convertirHierba()
+                    estado.tablero.anadirCasillaModificada(cas)
+                    estado.tablero.banderas -= 1
+                    #print "he metido en blacklist la bandera %d porque mi distancia del jugador %d es %d y la del otro jugador %d es %d" % (band1,jug1,distEq1,jug2,distEq2)
+                    if estado.tablero.banderas == 0: # Todas las banderas estan en blacklist
+                        white = random.randint(0, len(blacklist)-1)
+                        toDel = blacklist.pop(white)
+                        casDel = estado.tablero.casillaActual(toDel)
+                        estado.tablero.eliminarCasillaModificada(casDel)
+                        estado.tablero.banderas += 1
+                        (jug1,band1,distEq1) = estado.minimaDistancia(equipo1)
+                        #(jug2,band2,distEq2) = estado.minimaDistancia(equipo2, blacklist)
+                        done = True
+                else:
+                    done = True
+        # Vaciamos la blacklist y ponemos el estado como estaba
+        if len(blacklist) > 0:
+            for i in len(blacklist):
+                toDel = blacklist.pop(0)
+                casDel = estado.tablero.casillaActual(toDel)
+                estado.tablero.eliminarCasillaModificada(casDel)
+                estado.tablero.banderas += 1
+        ratioDistEq1 = bondadDist * math.exp((-1/(bondadDist/4))*distEq1)
+        #print "ratioDistEq1: ", ratioDistEq1
+        ratioDistEq2 = bondadDist * math.exp((-1/(bondadDist/4))*distEq2)
+        #print "ratioDistEq2: ", ratioDistEq2
+        ratioDist = ratioDistEq1 - ratioDistEq2
+        #raw_input()      
+        
+        ##############
+        # ENERGIA
+        ##############
+        (jug,accion) = nodo.accion
+        equipoExpande = (jug-1)//len(nodo.estado.equipos[0].jugadores)
+        energiaEq1 = nodo.estado.equipos[equipoExpande].getEnergiaTotal()
+        #ratioEnergiaEq1 = energiaEq1/100
+        
+        evalEq1 = ratioBandEq1 + ratioDistEq1# + ratioEnergiaEq1
+        evalEq2 = ratioBandEq2 + ratioDistEq2
         return evalEq1 - evalEq2
         #return evaluacion
 

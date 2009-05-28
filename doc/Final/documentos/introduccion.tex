@@ -1,0 +1,237 @@
+% -*- coding: utf-8 -*-
+
+\chapter {Introducción}
+Para comenzar con este documento se explicará en qué consiste el
+problema que abordaremos y cuáles son las decisiones de diseño
+planteadas, así como las estructuras de datos que se utilizarán para la
+resolución del mismo.
+
+
+\section {Definición del problema}
+El problema consiste en realizar un bot (agente racional) que pueda
+jugar de forma autónoma contra un adversario en \textbf{El Juego de la
+Bandera}, permitiendo la posibilidad de realizar una pequeña
+competición. La estrategia de juego será dirigida por un algoritmo
+Mini-Max con poda alfa-beta.
+
+Se puede encontrar una especificación más detallada de en qué consiste
+\textbf{El Juego de la Bandera} en el enunciado de la primera práctica
+de \emph{Inteligencia Artificial e Ingeniería del Conocimiento} del
+curso académico 2008-2009.
+
+
+\section {Decisiones de diseño}
+Al abordar este problema se plantearon una serie de conflictos
+(distancias mínimas reales, heurísticas, etc) cuya resolución no fue
+trivial y, dada su complejidad, se explicarán en apartados posteriores
+dedicados expresamente a ellos. No obstante, a este nivel ya se puede
+hablar de tres decisiones de diseño de gran importancia:
+\begin{itemize}
+\item El temporizador.
+\item El método de búsqueda.
+\item Control de estados repetidos.
+\end{itemize}
+
+\subsection{Temporizador}
+Como se define en el enunciado del problema, el bot debe jugar de
+forma autónoma contra un adversario y existe un parámetro fijado al
+crear una partida que indica el tiempo que tiene cada jugador para
+``pensar'' su jugada. Este parámetro acotará la profundidad a la que
+puede llegar el algoritmo Mini-Max y es crucial mandar un movimiento
+al servidor dentro de este límite de tiempo.
+
+Este problema se resolverá por medio de \textbf{hilos}. El programa
+principal pondrá a ``falso'' una variable compartida que hace la
+función de semáforo y creará un hilo. El hilo lanzará el algoritmo de
+búsqueda y el programa principal dormirá una cantidad de tiempo cercana a la
+duración del turno. Al despertar, pondrá a ``verdadero'' el semáforo y
+el hilo que lanzó el algoritmo de búsqueda parará su ejecución. Para
+que todo esto funcione correctamente, el algoritmo de búsqueda debe ir
+guardando en todo momento el mejor nodo que ha ido encontrando.
+
+\subsection{Método de búsqueda}
+Generalmente los algoritmos Mini-Max hacen una búsqueda clásica en
+profundidad, pero cuando el árbol de búsqueda es muy extenso y estamos
+limitados por tiempo, este método puede hacerse inviable ya que
+podemos dejar sin explorar zonas del árbol muy prometedoras. Para una
+búsqueda más exhaustiva, emplearemos un método de búsqueda de
+\textbf{profundidad iterativa}. De este modo nos aseguramos el ir
+explorando cada nivel por completo y nos es posible guardar la mejor
+solución encontrada hasta el momento.
+
+\subsection{Control de estados repetidos}
+\label{sec:estadosrepetidos}
+Como se verá a lo largo de este documento, el algoritmo Mini-Max tiene
+una función muy importante llamada \emph{expandir} que se encarga de
+generar todos los sucesores de un determinado nodo. Es posible que los
+sucesores generados ya hayan sido generados en algún otro momento y
+estén en espera para ser evaluados o expandidos, o incluso que ya
+hayan sido evaluados y expandidos.
+
+Para evitar este crecimiento innecesario del árbol de búsqueda se
+tratará de controlar la creación de estados repetidos mediante dos
+estructuras de datos:
+\begin{enumerate}
+\item Lista de estados repetidos.
+\item Diccionario de estados repetidos, simulado una tabla hash.
+\end{enumerate}
+
+\section {Estructuras de datos}
+En la figura \ref{'classdiagram'} se  muestra el diagrama de clases a
+partir del cual afrontaremos la programación de la práctica. Posteriormente, se
+mostrarán cada una de las clases individualmente y se dará una breve
+explicació de sus métodos y atributos.
+
+\imagen{class_diagram}{17cm}{Diagrama de clases}{classdiagram}
+
+\subsection {Clase Casilla}
+Esta clase (ver figura \ref{'classdiagramcasilla'}) almacena la
+información relativa a una casilla dada.
+\begin{itemize}
+\item \textbf{Atributos}: identificador y tipo.
+\item \textbf{Métodos}: \emph{convertirHierba()} y \emph{cavar()} únicamente
+  actualizan el atributo \emph{tipo} del objeto. La operación
+  \emph{coste()} devuelve un entero que indica cuánta vida la cuesta a
+  un jugador moverse a dicha casilla, teniendo en cuenta las unidades
+  de hacha (para bosques) y barca (para agua) de ese jugador.
+\end{itemize}
+
+\imagen{class_diagram_casilla}{5cm}{Clase
+  Casilla}{classdiagramcasilla}
+
+\subsection {Clase Tablero}
+Esta clase (ver figura \ref{'classdiagramtablero'}) almacena los
+cambios que han sucedido en el tablero desde el inicio hasta un
+momento dado. De este modo, podemos calcular el estado actual del
+tablero sin tener que almacenar información que no ha cambiado.
+\begin{itemize}
+\item \textbf{Atributos}: lista de casillas modificadas y número de banderas
+  que hay actualmente en el tablero.
+\item \textbf{Métodos}.
+  \begin{itemize}
+  \item \emph{idCasillasVecinas()} devuelve una lista de
+    identificadores de las seis casillas vecinas a la casilla indicada.
+  \item \emph{casillaActual()} devuelve un objeto Casilla dado un
+    identificador de casilla. Este objeto contiene el tipo actual de
+    la casilla en ese momento.
+  \item \emph{casillasVecinasActuales()} devuelve una lista que
+    contiene las seis casillas vecinas al identificador dado. Estos
+    objetos Casilla contienen su tipo actual.
+  \item \emph{WayTracking()} es un algoritmo que calcula las
+    distancias reales desde cualquier casilla del tablero a una
+    casilla dada. Más adelante se dará una descripción más detallada
+    de este algoritmo.
+  \end{itemize}
+\end{itemize}
+
+\imagen{class_diagram_tablero}{9cm}{Clase
+  Tablero}{classdiagramtablero}
+
+\subsection {Clase Jugador}
+Esta clase (ver figura \ref{'classdiagramjugador'}) almacena la
+información relativa a cada jugador tal y como se indica en el
+enunciado de la práctica.
+\begin{itemize}
+\item \textbf{Atributos}: identificador del jugador, identificador del
+  equipo, casilla actual, energia y las unidades de los objetos que posee.
+\item \textbf{Métodos}: Como se puede observar, prácticamente todos
+  los métodos devuelven un \emph{boolean}. Se trata de los métodos que
+  implican coger un objeto o utilizarlo, por lo que esta variable booleana
+  indica si el jugador ha cogido un objeto o lo ha utilizado. La
+  importancia de esta decisión de diseño radica en poder saber si el
+  jugador se ha movido o no, de este modo únicamente se generarán los
+  sucesores que han generado algún cambio en el estado de la partida.
+\end{itemize}
+
+\imagen{class_diagram_jugador}{5cm}{Clase Jugador}{classdiagramjugador}
+
+\subsection {Clase Equipo}
+Esta clase (ver figura \ref{'classdiagramequipo'}) almacena la
+información relativa a un equipo. En nuestro problema únicamente
+existirán dos instancias de esta clase: una para el equipo MIN y otra
+para el equipo MAX.
+\begin{itemize}
+\item \textbf{Atributos}: identificador del equipo, banderas
+  capturadas por el equipo y la lista de jugadores que pertenecen al equipo.
+\item \textbf{Métodos}: \emph{getEnergiaTotal()} suma las energias de
+  todos los jugadores del equipo. Este método es importante para la
+  heurística que valore lo buena o mala que sea la cantidad de energía
+  de un equipo.
+\end{itemize}
+
+\imagen{class_diagram_equipo}{5cm}{Clase Equipo}{classdiagramequipo}
+
+\subsection {Clase Estado}
+Esta clase (ver figura \ref{'classdiagramestado'}) almacena la
+información relevante de un estado.
+\begin{itemize}
+\item \textbf{Atributos}: una instancia de la clase Tablero que indica
+  las modificaciones que se han hecho en el tablero desde el inicio
+  hasta este estado, y la lista de equipos que juegan la partida con
+  el estado de cada uno de sus jugadores.
+\item \textbf{Métodos}.
+  \begin{itemize}
+  \item \emph{esSolucion()} devuelve ``verdadero'' si el número de
+    banderas que quedan en el tablero es 0. En caso contrario devuelve
+    ``falso''.
+  \item \emph{actualizarEstado()} actualiza la información del jugador con
+    el que se realiza una acción, la información de su equipo y la
+    información de la casilla a la que se mueve. Devuelve
+    ``verdadero'' en caso de que se haya modificado el estado y
+    ``falso'' en caso contrario. Esta decisión es importante para
+    únicamente generar nodos que tengan modificaciones en su estado.
+  \end{itemize}
+
+\end{itemize}
+
+\imagen{class_diagram_estado}{6cm}{Clase Estado}{classdiagramestado}
+
+\subsection {Clase Nodo}
+Esta clase (ver figura \ref{'classdiagramnodo'}) almacena la
+información perteneciente a cada nodo. Esta información está reflejada
+en sus atributos.
+\begin{itemize}
+\item \textbf{Atributos}: el estado de este nodo, el nodo padre, la
+  acción que se ha ejecutado para llegar a este nodo, la profundidad
+  del nodo y su valor de utilidad (inicialmente valorado a -INFINITO).
+\item \textbf{Métodos}.
+  \begin{itemize}
+  \item \emph{repetidoEnRama()} que comprueba si este nodo contiene un
+    estado repetido en alguno de sus antecesores.
+  \item \emph{primerAntecesor()} que devuelve el nodo con profundidad
+    inicial que nos ha llevado a generar este nodo.
+  \end{itemize}
+\end{itemize}
+
+\imagen{class_diagram_nodo}{5cm}{Clase Nodo}{classdiagramnodo}
+
+\subsection {Clase Minimax}
+Esta clase (ver figura \ref{'classdiagramminimax'}) es la clase
+principal que maniobra con todas las estructuras en busca de una
+jugada.
+\begin{itemize}
+\item \textbf{Atributos}: el nodo inicial a partir del cual
+  comenzaremos la búsqueda, el mejor nodo encontrado hasta el momento
+  y una variable de control que nos indica si podemos seguir buscando
+  o no.
+\item \textbf{Métodos}.
+  \begin{itemize}
+  \item \emph{Sync()} reinicia la variable compartida \emph{timeout} a
+    ``falso'' y duerme durante X segundos, donde X es el tiempo por
+    turno con el que se configura la partida menos un breve intervalo
+    de tiempo de seguridad.
+  \item \emph{decision-minimax()} inicia la búsqueda en profundidad
+    iterativa desde el nodo inicial expandiéndolo como MAX.
+  \item \emph{max-valor()} y \emph{min-valor()} son los métodos
+    utilizados en el algoritmo minimax para la búsqueda de los mejores
+    y peores sucesores. Más adelante se explicará con detalle.
+  \item \emph{expandir()} expande un nodo generando únicamente los
+    sucesores válidos que han generado algún cambio en el estado.
+  \item \emph{test-terminal()} devuelve ``verdadero'' si el nodo
+    contiene un estado objetivo o si se ha llegado a la profundidad de corte.
+  \item \emph{evaluacion()} obtiene un valor para el nodo dado. Esta
+    función será explicada con detalle más adelante.
+  \end{itemize}
+\end{itemize}
+
+\imagen{class_diagram_minimax}{9cm}{Clase Minimax}{classdiagramminimax}

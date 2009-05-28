@@ -1,0 +1,58 @@
+# nodoMejor es una variabe global o un atributo de clase que se inicializa
+#con su valoracion a -INFINITO
+
+# El nodo raiz es de tipo MAX
+function decision-minimax(nodo)
+    v=-INFINITO
+    max-valor(nodo)
+
+
+function max-valor(nodo):
+    if test-terminal(nodo.estado):
+        return utilidad(nodo.estado,MAX,MIN)
+    else:
+        v=-INFINITO
+        accion=(-1,-1)
+        # Expando el nodo MAX
+        sucesores=expandir(nodo,MAX)
+        for s in sucesores:
+            v=max(v, min-valor(s))
+            if v>nodoMejor.v:
+                nodoMejor=primerAntecesor(s)
+                nodoMejor.v=v
+    return v
+
+
+function min-valor(nodo):
+    if test-terminal(nodo.estado):
+        return utilidad(nodo.estado,MAX,MIN)
+    else:
+        v=INFINITO
+        accion=(-1,-1)
+        sucesores=expandir(nodo.estado,MIN)
+        for s in sucesores:
+            v=min(v, max-valor(s))
+    return (accion,v)
+		
+
+function test-terminal(estado,equipo):
+    terminal=True
+    # Si se han capturado todas las banderas, es terminal
+    if estado.equipos[equipo].banderasCapturadas==banderasTotales:
+        pass
+    else:
+        # Sino, comprobamos si hay algun jugador vivo
+        # Si queda alguno vivo, no es terminal
+        for jug in estado.equipos[equipo].jugadores:
+            if jug.energia<=0:
+                termnal=False
+                break
+    return terminal
+
+
+function utilidad(estado,equipo):
+    eq_aux=estado.equipos[equipo]
+    utilidad=0
+    utilidad+=valoracionEnergia(eq_aux,energiaTotal)
+    utilidad+=valoracionCapturas(eq_aux.banderasCapturadas,banderasTotales)
+    return utilidad

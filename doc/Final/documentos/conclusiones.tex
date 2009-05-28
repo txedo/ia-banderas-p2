@@ -1,0 +1,53 @@
+\chapter {Conclusiones}
+
+Después de la realización de esta práctica se ha comprendido cómo
+funciona un algoritmo Mini-Max y las ventajas que aporta la
+incorporación de la poda Alfa-Beta. Además, se han reutilizado los
+conceptos aprendidos durante la realización de la primera práctica
+para la elección del método de búsqueda: \emph{primero en profundidad} o
+\emph{profundidad iterativa}.
+
+Como se ha podido comprobar a lo largo de las pruebas que se han hecho
+con el cliente, los papeles más importantes a la hora de decidir la
+mejor acción que se puede realizar en cada momento los juegan la
+heurística y la profundidad a la que llegamos explorando. Sin duda, el
+comportamiento del bot viene determinado por la heurística (p.e. ignorar
+banderas que sabemos que no vamos a coger) pero la profundidad a la
+que llegamos en la búsqueda es tan importante como la heurística ya
+que podemos obtener comportamientos inesperados debido a situaciones
+que no son del todo estables (p.e. perder una bandera por tratar de
+ahorrar energía se podría haber evitado si el nivel de profundidad al
+que llegamos explorando incluye la captura de esa bandera). Este
+último aspecto hace todavía más importante la incorporación de la poda
+Alfa-Beta al algoritmo Mini-Max, ya que nos permite la poda de
+sub-árboles completos y, por consiguiente, invertir el tiempo que
+invertiríamos en explorar esos sub-árboles en explorar otras ramas a
+mayores niveles de profundidad.
+
+Por último, y en concepto de resumen, en este documento se han tratado
+los siguientes temas:
+\begin{itemize}
+\item En qué consiste el problema propuesto, las decisiones de diseño
+  que se han tomado y las estructuras de datos que se han empleado
+  para su resolución.
+\item Las soluciones teóricas propuestas, cómo son llevadas a la
+  práctica, y cómo realizar una buena heurística en varias iteraciones
+  bien definidas, dividiendo el problema y resolviéndolo por partes.
+\item Los comportamientos, tanto esperados como inesperados, que se
+  han obtenido por parte del bot en la ejecución de las pruebas.
+\item Y un manual de usuario para saber qué software es necesario
+  instalar en el sistema y cómo se debe ejecutar la práctica para
+  verla en funcionamiento.
+\end{itemize}
+
+Dejando de lado aspectos de los que ya se hablan en otras secciones de
+este documento y refiriéndome a experiencias personales, tengo que
+decir que esta es la primera vez que escribo una documentación en
+\LaTeX{} y, aunque he tardado más tiempo en escribirla que con otros
+procesadores de textos como \emph{{O}pen{O}ffice.org {W}riter}, considero que
+la presentación y calidad del documento merecen la pena.
+
+Por último, quiero agradecer a los profesores y desarrolladores del
+servidor la inclusión de distintos clientes en diferentes lenguajes de
+programación ya que nos sirven de ejemplo para futuros usos del
+interfaz de comunicaciones {I}ce.

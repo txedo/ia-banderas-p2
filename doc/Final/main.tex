@@ -1,0 +1,80 @@
+% -*- coding: utf-8 -*-
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{a4wide}
+\usepackage{fancyhdr}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{rotating}
+\usepackage{float}
+\usepackage{lscape}
+\usepackage{graphicx}
+\usepackage{longtable}
+%%\usepackage{tikz}
+\textheight=21cm
+\textwidth=16cm
+\topmargin=0cm
+\oddsidemargin=0mm
+\headheight=31.75401pt
+\parindent=10mm
+
+%Configuración fancyhdr
+\chead{}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\textbf{ESI Ciudad Real}}
+\fancyfoot{}
+\fancyfoot[R]{Planificación y Gestión de SI}
+\fancyfoot[C]{\thepage}
+\fancyfoot[L]{2008/2009}
+
+\setlength{\parskip}{6pt}
+
+\title{UCLM
+  \\
+  \vspace*{7mm}  Entregable cuarto PGSI}
+\author{Tobías Díaz Díaz-Chirón \ Antonio Gómez Poblete \ Manuel
+  J. Abaldea Gª-Pliego \ Jose D. López López}
+\date{\today}
+
+\begin{document}
+\input{portada.tex}
+\newpage
+\input{ficha.tex}
+\newpage
+\pagestyle{fancy}
+
+% \maketitle
+% \newpage
+\tableofcontents
+\newpage
+
+\label{sec:introduccion}
+\input{intro.tex}
+
+\label{sec:identificacion}
+\input{identificar.tex}
+
+\label{sec:magnitud}
+\input{magnitud.tex}
+
+\label{sec:contingencia}
+\input{PlandeContingencia.tex}
+\clearpage
+
+% \appendix
+% \label{sec:apendices}
+% \input{apendices.tex}
+% \clearpage
+
+% \begin{thebibliography}{9}
+%   \input{bibliografia.tex}
+% \end{thebibliography}
+% \clearpage
+
+\end{document}

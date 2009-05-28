@@ -1,0 +1,24 @@
+\begin{thebibliography}{1}
+
+\bibitem{psyco}
+Psyco {H}ome {P}age.
+\newblock \url{http://psyco.sourceforge.net/}.
+
+\bibitem{python}
+Python {P}rogramming {L}anguage - {O}fficial {W}ebsite.
+\newblock \url{http://www.python.org/}.
+
+\bibitem{russell03}
+S.J. Russell and P.~Norvig.
+\newblock {\em Inteligencia Artificial. Un Enfoque Moderno, 2a ed.}
+\newblock Pearson Prentice Hall, 2003.
+
+\bibitem{webia}
+Inteligencia {A}rtificial - web de la asignatura.
+\newblock \url{http://obi-wan.inf-cr.uclm.es:44080/parte2/}.
+
+\bibitem{zeroc}
+Zeroc, the {H}ome of {I}ce.
+\newblock \url{http://www.zeroc.com/}.
+
+\end{thebibliography}

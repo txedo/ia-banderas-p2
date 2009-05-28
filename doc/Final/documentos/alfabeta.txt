@@ -1,0 +1,69 @@
+# alfa: valor de la mejor alternativa (el valor mas alto) encontrada
+#hasta el momento para un nodo MAX
+# beta: valor de la mejor alternativa (el valor mas bajo) encontrada
+#hasta el momento para un nodo MIN
+# accion es una tupla de enteros (jugador,movimiento)
+
+
+function busqueda-alfa-beta(nodo)
+    v=-INFINITO
+    max-valor(nodo,-INFINITO,INFINITO)
+
+
+function max-valor(nodo,alfa,beta):
+    if test-terminal(nodo.estado):
+        return utilidad(nodo.estado,MAX,MIN)
+    else:
+        v=-INFINITO
+        accion=(-1,-1)
+        sucesores=expandir(nodo,MAX)
+        for s in sucesores:
+            v=max(v, min-valor(s,alfa,beta))
+	    # poda
+            if v>=beta:
+	       return(accion,v)
+	    # si no se poda...
+            alfa=max(alfa,v)
+	    if v>nodoMejor.v:
+	       nodoMejor=primerAntecesor(s)
+	       nodoMejor.v=v
+    return v
+
+
+function min-valor(nodo,alfa,beta):
+    if test-terminal(nodo.estado):
+        return utilidad(nodo.estado,MAX,MIN)
+    else:
+        v=INFINITO
+        accion=(-1,-1)
+        sucesores=expandir(nodo,MIN)
+        for s in sucesores:
+            (accion_aux,v_aux)=max-valor(s,alfa,beta)
+	    # poda
+            if v<=alfa:
+	       return(accion,v)
+            beta=min(beta,v)
+    return (accion,v)
+		
+
+function test-terminal(estado,equipo):
+    terminal=True
+    # Si se han capturado todas las banderas, es terminal
+    if estado.equipos[equipo].banderasCapturadas==banderasTotales:
+        pass
+    else:
+        # Sino, comprobamos si hay algun jugador vivo
+        # Si queda alguno vivo, no es terminal
+        for jug in estado.equipos[equipo].jugadores:
+            if jug.energia<=0:
+                termnal=False
+                break
+    return terminal
+
+
+function utilidad(estado,equipo):
+    eq_aux=estado.equipos[equipo]
+    utilidad=0
+    utilidad+=valoracionEnergia(eq_aux,energiaTotal)
+    utilidad+=valoracionCapturas(eq_aux.banderasCapturadas,banderasTotales)
+    return utilidad

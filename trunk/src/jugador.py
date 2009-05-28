@@ -152,9 +152,3 @@ class Jugador:
         return cadena
 
 
-    def __eq__(self, other):
-        if global_vars.algoritmo == config.A_ESTRELLA or global_vars.algoritmo == config.PROFUNDIDAD or global_vars.algoritmo == config.PROFUNDIDAD_ITERATIVA:
-            return self.idJugador==other.idJugador and self.equipo==other.equipo and self.casilla==other.casilla and self.hacha==other.hacha and self.barca==other.barca and self.pala==other.pala
-        elif global_vars.algoritmo == config.ANCHURA:
-            return self.idJugador==other.idJugador and self.equipo==other.equipo and self.casilla==other.casilla and self.energia==other.energia and self.hacha==other.hacha and self.barca==other.barca and self.pala==other.pala
-

@@ -1,0 +1,390 @@
+\chapter {Soluciones Teóricas}
+En un algoritmo Mini-Max se consideran dos jugadores a los que
+llamaremos Max y Min ya que, una vez que evaluamos un nodo, se supone
+que los valores altos son buenos para Max y los malos para Min. De
+esto se deduce que, dado que queremos que nuestro equipo consiga las
+mejores puntuaciones, nosotros seremos el equipo Max y nuestro rival
+será el equipo Min.
+
+Considerando un árbol de juegos, la estrategia óptima puede
+determinarse examinando el \textbf{valor minimax} de cada nodo (si es un estado
+terminal es solamente su utilidad). Un algoritmo minimax calcula la
+decisión minimax del estado actual. La recursión avanza hacia las
+hojas del árbol, y entonces los valores minimax retroceden por el
+árbol cuando la recursión se va deshaciendo. Como se puede deducir, un
+algoritmo minimax realiza una \textbf{búsqueda primero en profundidad}
+completa del árbol de juegos, es decir, si la profundidad máxima de
+árbol es \emph{m}, y hay \emph{b} movimientos legales en cada punto,
+entonces la complejidad en tiempo del algoritmo minimax es $O(b^m)$ y
+la complejidad en espacio es $O(bm)$.
+
+Como hemos visto, el problema de la búsqueda minimax es que el número
+de estados que tiene que examinar es exponencial en el número de
+movimientos. Lamentablemente no podemos eliminar el exponente, pero
+podemos dividirlo, con eficacia, en la mitad. La jugada es que es
+posile calcular la decisión minimax correcta sin mirar todos los nodos
+en el árbol de juegos aplicando la ténica de \textbf{poda alfa-beta}. Esta poda
+puede aplicarse en árboles de cualquier profundidad y, a menudo, es
+posible podar subárboles enteros. Además, es necesario tener en cuenta
+que los estados repetidos en el árbol de búsqueda pueden causar un
+aumento exponencial del coste de búsqueda. Esto se debe a
+permutaciones diferentes de la secuencia de movimientos que terminan
+en la misma posición. Para resolver este problema se utiliza una \textbf{tabla
+de transposición}, que tradicionalmente es una \emph{tabla hash} idéntica a la
+\emph{lista cerrada} que utilizamos en el algoritmo A* de la primera
+práctica. La forma de trabajar con dicha tabla es guardando la
+evaluación de cada posición la primera vez que se encuentre, de modo
+que no tenemos que volver a calcularla las siguientes veces.
+
+Por último, hay que tener en cuenta que la \textbf{función de utilidad} (que
+comprueba si un estado es objetivo y le asigna un valor de utilidad)
+hay que modificarla ligeramente si no podemos explorar completamente
+el árbol de búsqueda (y no podremos ya que los turnos están limitados
+en tiempo), ya que no podemos explorar las ramas hasta las hojas y
+debemos cortar a una determinada profundidad. Esta nueva función
+recibe el nombre de \textbf{función de evaluación}, que devuelve una estimación
+de la utilidad esperada de una posición dada. En este momento, podemos
+plantearnos la posibilidad de implementar nuestro algoritmo mediante
+\textbf{profundidad iterativa} para que cuando se agote el tiempo, el programa
+nos devuelva el movimiento seleccionado por la búsqueda completa más
+profunda.
+
+\section{Conceptos básicos}
+Para la realización de esta práctica es necesario tener en cuenta los
+siguientes conceptos:
+\begin{itemize}
+\item \textbf{Estado}. En la primera práctica un estado estaba
+  compuesto por una lista de jugadores (ya que únicamente jugaba un
+  equipo) y una lista de casillas del tablero que se habían ido
+  modificando a lo largo de la partida. En esta segunda práctica, en
+  la que juegan juegan dos equipos (el nuestro y el rival), es
+  necesario hacer un pequeño ajuste para que el estado esté compuesto
+  por una lista de equipos (cada equipo tendrá una lista con sus
+  jugadores) y una lista de casillas modificadas. Pero, como hemos
+  visto en la sección anterior, la complejidad en espacio de un
+  algoritmo minimax es $O(bm)$. Dicho esto, puede ser interesante
+  plantearse la posibilidad de almacenar el estado del tablero
+  completo para no tener que recalcularlo cada vez que lo necesitemos
+  aplicando los cambios indicados por la lista de casillas modificadas.
+\item \textbf{Función sucesor}. Esta función es similar a la que
+  utilizamos en la primera práctica, solo que añadiremos un séptimo
+  movimiento para poder cavar. De modo que serán dos bucles anidados
+  en los que el primero recorrerá la lista de jugadores y el segundo
+  hará cada uno de los siete posibles movimientos, generando así todos
+  los posibles sucesores de un nodo.
+\item \textbf{Test terminal}. Esta función determina si un nodo contiene un
+estado objetivo. Un estado será objetivo cuando se hayan capturado
+todas las banderas del equipo contrario o no nos quede ningún jugador
+con vida.
+\item \textbf{Función de utilidad}. Nuestro juego es un \textbf{juego de
+  suma no cero}. Esta función evaluará un nodo terminal y le asignará
+un valor de utilidad en función del número de banderas capturadas y
+la energía total de cada equipo, tratando así de maximizar las
+banderas que captura nuestro equipo y su energía; y de minimizar las
+banderas que captura el equipo rival y su energía. En esta función no
+es necesario tener en cuenta las distancais de los jugadores a las
+banderas restantes ya que estamos hablando de \textbf{nodos terminales}.
+\item \textbf{Función de evaluación}. Convierte los nodos no terminales en
+hojas terminales. Es necesario sustituir test terminal por un
+\textbf{test-límite} que decide cuando aplicar la función de
+evaluación (que sustituye a la función de utilidad), que nos devolverá
+una estimación de la utilidad esperada de una posición dada.
+\end{itemize}
+
+\section {Algoritmo Minimax}
+\label{minimax}
+A continuación se muestra el pseudocódigo del algoritmo Mini-Max que
+se implementará. Este pseudocódigo está diseñado para una
+\emph{búsqueda primero en profundidad} por lo que habrá que hacer una
+pequeña modificación en la función \emph{decisión-minimax()} para que
+la búsqueda sea de \emph{profundidad iterativa}. Esta modificación
+consiste en pasar a \emph{valor-max()} y \emph{valor-min()} un
+argumento \emph{límite} que se irá incrementando unidad a unidad
+mediante una estructura iterativa de tipo \emph{for}. Las funciones
+\emph{valor-max()} y \emph{valor-min()} pasarán a su vez este
+parámetro al \emph{test-terminal()} que comprobará cuándo se llega a
+la profundidad de corte.
+
+La documentación utilizada a la hora de diseñar el algoritmo Mini-Max
+e incorporarle la poda Alfa-Beta se puede encontrar en
+\cite{russell03}
+
+Nótese que a este nivel, la función \emph{utilidad()} es una mera
+aproximación y será revisada con más detenimiento en la sección
+\ref{heuristicas}.
+
+\texttt{\lstinputlisting[inputencoding=utf8]{documentos/minimax.txt}}
+
+\section {Poda Alfa-Beta}
+A continuación se muestra el pseudocódigo del algoritmo minimax de la
+sección \ref{minimax} con la poda alfa-beta incorporada.
+
+Su funcionamiento es sencillo. Consiste en dos variables locales
+\emph{alfa} y \emph{beta} que indican el valor de la mejor alternativa
+para MAX y el valor de la mejor alternativa para MIN a lo largo del
+camino respectivamente. Inicialmente, \emph{alfa} es tiene un valor
+muy malo para que éste pueda ser mejorado (-INFINITO), y \emph{beta}
+tiene un valor muy bueno para que éste pueda ser empeorado (INFINITO),
+ya que a MAX le interesa que el contrario obtenga el menor
+beneficio. Estas variables se van pasando de una llamada a otra y sus
+valores van siendo actualizados. De este modo podemos detectar cuando
+hay subárboles que no son prometedores y podemos ``podarlos'' sin
+compromiso alguno.
+
+\texttt{\lstinputlisting[inputencoding=utf8]{documentos/alfabeta.txt}}
+
+\section {Heuristicas Diseñadas}
+\label{heuristicas}
+En realidad sólo se ha diseñado una heurística, pero ésta se ha
+obtenido a lo largo de cuatro iteraciones bien definidas. En cada
+iteración se trataba de lograr un objetivo, es decir, un
+comportamiento por parte de los jugadores
+
+\subsection {Algoritmo WayTracking}
+\label{alg:waytracking}
+Probablemente el aspecto más crucial a la hora de desarrollar la
+heurística sea el cálculo de distancias reales desde los jugadores a
+las banderas. Este problema ya se planteó en la primera práctica
+cuando se desarrolló el algoritmo de \emph{búsqueda informada A*} y se
+resolvió mediante distancias euclídieas o distancias en línea recta,
+una forma muy sencilla y válida en caso de tratarse de un entorno
+\textbf{parcialmente observable}, pero como en este caso el entorno es
+\textbf{totalmente observable}, se trata de un cálculo poco eficiente
+ya que no tiene en cuenta las restricciones que pueda imponer éste (ver figura
+\ref{'waytracking'}). Por esta razón, se propone un algoritmo
+desarrollado por el autor de este documento y que ha sido denominado
+\textbf{WayTracking}. WayTracking es un algoritmo de tipo
+\emph{backtracking} que calcula las distancias reales desde una
+casilla a todas las demás casillas teniendo en cuenta las murallas del
+tablero. Se trata de un algoritmo muy eficiente y se ha conseguido
+calcular las distancias en mapas de hasta $100x100$ casillas en menos
+de $0.5$ segundos.
+
+\imagen{waytracking}{6cm}{Cálculo de distancias reales y en línea
+  recta}{waytracking}
+
+WayTracking consta de dos fases:
+\begin{enumerate}
+\item La primera es una inicialización en la que se etiqueta la
+  casilla destino donde se encuentra la bandera con un cero, indicando
+  distancia cero. A continuación, se etiquetan todas las casillas del
+  tablero a una distancia máxima de la casilla destino, por ejemplo
+  INFINITO. El siguiente paso es etiquetar todas las casillas que son
+  de tipo \emph{muralla} a distancia $-1$. De este modo se indica que
+  esas casillas son inalcanzables. Dada esta fase de inicialización,
+  WayTracking sólo puede utilizarse en entornos totalmente observables.
+\item La segunda fase son una serie de llamadas recursivas al
+  algoritmo de WayTracking que se encarga de calcular las distancias
+  mínimas desde la casilla destino a cada una de las casillas
+  etiquetadas como INFINITO del tablero.
+\end{enumerate}
+
+El algoritmo se planteó siguiendo los siguientes razonamientos:
+\begin{itemize}
+\item En la \textbf{etapa} $k$ etiquetamos las casillas adyacentes a
+  las casillas a distancia $k$ de la bandera supuesto que hemos
+  etiquetado las $k-1$ casillas anteriores, de modo que las casillas
+  etiquetadas con un valor inferior a $k$ ya están etiquetadas con su
+  distancia mínima.
+\item La \textbf{generación de descendientes} consiste en recorrer con un bucle
+  \emph{for} todas las casillas adyacentes a aquellas que tienen distancia
+  $k$.
+\item El \textbf{test de solución} es cuando hemos etiquetado todas las casillas
+($filas*columnas$)
+\item El \textbf{test de fracaso} es intentar etiquetar con una distancia mayor
+  una casilla etiquetada o etiquetar una muralla. Como las murallas se
+  inicializaron con distancia $-1$, no podemos etiquetarla en ningún
+  momento porque $k$ comienza en cero.
+\item Buscamos minimizar la distancia, así que las \textbf{inicializaciones} se
+  harán a INFINITO. No se trata de un problema de optimización de
+  soluciones, por lo que no habrá que comparar distintas
+  soluciones.
+\item La \textbf{solución} será una lista que indica la distancia real de cada
+  casilla a una casilla dada.
+\end{itemize}
+
+Dicho esto, podemos observar la importancia de la información que nos
+genera WayTracking obsevando la figura \ref{'waytracking'}, donde
+podemos ver que la distancia en línea recta es de $2$ casillas
+mientras que WayTracking indica que son $4$ casillas. Gracias a esto,
+podemos saber realmente si nuestros jugadores están más cerca de las
+banderas que los jugadores contrarios.
+
+Como WayTracking sólo calcula las distancias desde una casilla hasta
+todas las demás casillas del tablero, deberemos hacer una ejecución
+del algoritmo por cada bandera. Así, podremos hacer un diccionario de
+distancias donde podremos encontrar las distancias reales desde
+cualquier casilla hasta cualquier bandera. Además, como el tablero es
+completamente obsevable antes de que comienze la partida (justo al
+conectar al servidor) y las banderas siempre están en posiciones
+fijas, podemos lanzar las ejecuciones de WayTracking antes de consumir
+tiempo de nuestro turno y realizar los cálculos una única vez,
+reutilizándolos a lo largo de toda la partida.
+
+La implementación de WayTracking puede verse en el código fuente de la
+clase Tablero (sección \ref{clasetablero}).
+
+\subsection {Primera aproximación}
+\label{sec:distancias}
+En una primera iteración del diseño de la heurística, se ha tratado
+que los jugadores vayan a coger las banderas que se encuentran a menor
+distancia sin tener en cuenta la posición de los jugadores contrarios.
+
+\imagen{func_exp}{10cm}{$b*e^{(-1/b)*x}$, siendo $b=5$}{funcexp}
+
+\imagen{func_lineal}{10cm}{$b-x$, siendo $b=5$}{funclineal}
+
+Es aquí cuando se plantea un problema a la hora de valorar las
+bondades de las distancias y las banderas porque, cuantas más banderas
+capturemos mejor, pero cuanto mayores sean las distancias mínimas peor
+es nuestra posición de juego. Con esto se intenta ver que hay que dar
+mayor valor a las distancias bajas y para ello necesitamos alguna
+función que nos invierta este concepto. Se proponen dos funciones como
+caso de estudio: $b*e^{(-1/b)*x}$ (ver figura \ref{'funcexp'}) y $b-x$
+(ver figura \ref{'funclineal'}).
+
+Vamos a tratar primero el tema de las banderas capturadas ya que es
+más sencillo. En esta primera interación se obtenían las banderas
+capturadas por el equipo MAX y las banderas capturadas por el equipo
+MIN para hacer la diferencia que se multiplicaba por una constante.
+
+Para tratar el tema de las distancias es necesario entender las
+gráficas mostradas en \ref{'funcexp'} y \ref{'funclineal'}: el eje de
+abcisas representa la distancia que estamos midiendo, y el eje de
+ordenadas representa el valor que vamos a darle a esa distancia. De
+este modo podemos obtener el cuadro \ref{tab:valoraciones}.
+
+Las ventajas de \ref{'funclineal'} sobre \ref{'funcexp'} es que con
+un mismo parámetro, no tiende hacia un valor 0 para distancias muy
+grandes y hace que las valoraciones sean más significativas porque da
+valores enteros y no valores con decimales que hacen que éstos sean
+muy próximos entre sí.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}[h!]{|c|c|c|}
+    \hline
+    \textbf{Distancia} & \textbf{Función \ref{'funcexp'}} & \textbf{Función
+    \ref{'funclineal'}} \\ \hline
+    5 & 1.83 & 0.00 \\ \hline
+    4 & 2.24 & 1.00 \\ \hline
+    3 & 2.74 & 2.00 \\ \hline
+    2 & 3.35 & 3.00 \\ \hline
+    1 & 4.09 & 4.00 \\ \hline
+    0 & 5.00 & 5.00 \\ \hline
+  \end{tabular}
+  \caption{Valoraciones de las funciones \ref{'funcexp'} y
+    \ref{'funclineal'} para $b=5$}
+  \label{tab:valoraciones}
+\end{table}
+
+Una vez que tenemos las valoraciones de las distancias mínimas de los
+jugadores MAX y MIN, las multiplicamos por una constante, calculamos
+la diferencia y lo sumamos a la evaluación que habíamos obtenido de
+las banderas. 
+
+Hasta ahora hemos evaluado los dos equipos del mismo modo y la
+evaluación resultante es la diferencia de ambas evaluaciones, pero
+existe el problema de las constantes utilizadas al evaluar las
+banderas y las distancias que deberá ser resuelto en la segunda
+iteración (ver sección \ref{sec:bondades}).
+
+Por último, otro factor a tener en cuenta es que no midamos la
+distancia mínima desde un jugador que no está muerto pero que no se
+puede mover (p.e. un jugador rodeado de agua con 2 unidades de
+energía). Esto se resuelve mediante la función
+\emph{jugadorBloqueado()} de la \emph{Clase Estado}, que nos indica si
+el jugador se puede mover o no: si puede moverse lo tendremos en
+cuenta para el cálculo de distancias mínimas; en caso contrario, se
+considerará que está muerto.
+
+
+\subsection {Segunda aproximación}
+\label{sec:bondades}
+En esta iteración definiremos cuál será el parámetro $b$ que tanto
+condiciona nuestra función \ref{'funclineal'}. Después de una serie de
+pruebas, se ha aproximado que este parámetro tendrá un valor igual a
+$\frac{columnas+filas}{2}*\frac{3}{4}$, dado que es una aproximación a
+la máxima distancia que puede haber en cualquier tipo de tablero.
+
+Ahora, dado que la bondad de las distancias es variable, tenemos que
+asegurarnos que las distancias no obtengan mejores valoraciones que la
+captura de banderas. Esto se consigue sustituyendo la constante que
+indica la bondad de las banderas por otro valor que varie en función
+del tablero. Se propone utilizar un valor igual a $filas*columnas$.
+
+
+\subsection {Tercera aproximación}
+\label{sec:blacklist}
+Hasta ahora nuestros jugadores capturan correctamente las banderas
+cualesquiera que sea la dimensión del tablero y siempre y cuando
+nuestro contricante no coja las banderas antes que nosotros. Esto
+plantea el problema de que nuestros jugadores van a por la bandera con
+distancia más corta si pensar que el contrario va también a por esa misma
+bandera, dado que también es la que tiene a mínima distancia.
+
+Aquí es donde entra el concepto de \textbf{blacklist} o \textbf{lista
+  negra}. Consiste en que una vez que se han calculado las distancias
+mínimas de ambos equipos, se comprueban si ambas distancias se
+refieren a la misma bandera. En caso afirmativo, si la distancia del
+equipo contrario es menor que la de nuestro equipo, esa bandera se
+añadirá a la lista negra y se volverá a calcular la distancia mínima
+para nuestro equipo sin tenerla en cuenta. Este proceso se
+hará hasta que se encuentre una bandera a la que realmente podamos
+optar a capturar o, si se da el caso en que el jugador contrario está
+mejor situado que nosotros con respecto a todas las banderas y todas
+ellas se han añadido a la lista negra, se escogerá una bandera
+aleatoriamente y será removida de la lista negra para dirigirnos hacia
+ella.
+
+Si obsevamos la figura \ref{'blacklist'}, se aprecia que la distancia
+mínima del \emph{Jugador 1} es 1 y se refiere a la \emph{Bandera 1}, y
+que la distancia mínima del \emph{Jugador 2} es 2 y también se refiere
+a la \emph{Bandera 1}. Como el \emph{Jugador 2} no puede optar a coger
+la \emph{Bandera 1}, la añadirá a su \emph{blacklist} y volverá a
+calcular su distancia mínima, siendo en este caso 3 refiriéndose a la
+\emph{Bandera 2}. Como esta bandera no está amenazada, irá a
+capturarla dejando que el \emph{Jugador 1} capture la \emph{Bandera
+  1}.
+
+\imagen{blacklist}{14cm}{Ejemplo de \emph{lista negra}}{blacklist}
+
+\subsection {Cuarta aproximacion}
+\label{sec:energia}
+Se llevó a cabo una cuarta iteración en la que se trataba de ahorrar
+la energía consumida. Se consiguió este comentido pero si no se
+llegaba en la búsqueda a la profundidad necesaria, podía provocar que
+perdiésemos alguna bandera o incluso la partida, por lo que fue
+deshechada.
+
+Si observamos la figura \ref{'savingenergy'} podemos ver un claro
+ejemplo en el que ahorrar energía nos podría suponer la pérdida de una
+bandera (suponiendo que mueva primero el \emph{Jugador 1}).
+
+\imagen{savingenergy}{14cm}{Ejemplo de ahorro de
+  energ{í}a}{savingenergy}
+
+Para evitar este tipo de situaciones, ya que los zumos creaban aún más
+conflicto, esta característica ha sido suprimida de la heurística.
+
+\subsection {Heurística final}
+Después de estas cuatro iteraciones, la heurística que hemos obtenido
+tiene las siguientes características:
+\begin{itemize}
+\item Siempre trabaja con distancias reales independientemente de las
+  restricciones que imponga el trablero gracias al algoritmo
+  \textbf{WayTracking}. Como ya se ha explicado, trabajar con
+  distancias reales en lugar de distancias estimadas en línea recta es
+  una solución mucho más eficiente (ver sección \ref{alg:waytracking}).
+\item No sólo se ignoran jugadores muertos en el cálculo de distancias
+  mínimas, si no que también se ignoran jugadores que no pueden
+  moverse por la razón que sea (ver sección \ref{sec:distancias}).
+\item Evalúa el número de banderas y las distancias mínimas a las que
+  se encuentran los jugadores de cada equipo utilizando bondades que
+  varían en función del tamaño del tablero (ver sección \ref{sec:bondades}).
+\item Tiene en cuenta que las banderas a las que se refieren las
+  distancias mínimas de cada equipo no sean las mismas, para no tratar
+  de coger una bandera que sabemos que capturará el otro equipo antes
+  que nosotros. Esto es gracias al uso de la \textbf{lista negra} (ver
+  sección \ref{sec:blacklist}).
+\end{itemize}

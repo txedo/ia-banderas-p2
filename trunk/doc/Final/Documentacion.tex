@@ -1,0 +1,257 @@
+% -*- coding: utf-8 -*-
+\documentclass [a4paper, oneside, 12pt]{book}
+% \documentclass[a4paper,12pt]{article}
+\usepackage[spanish]{babel}
+\usepackage {latexsym}
+\usepackage {fancybox}
+\usepackage {longtable}
+\usepackage {hyperref}
+\hypersetup{linktocpage,colorlinks,urlcolor=blue,citecolor=blue,%
+	linkcolor=blue,filecolor=blue,pdfnewwindow}
+\usepackage {a4wide}
+
+\usepackage {color}
+\usepackage[utf8]{inputenc}
+\ifx\pdftexversion\undefined
+  \usepackage[dvips]{graphics}
+\else
+  \usepackage[pdftex]{graphics}
+\fi
+
+%% margenes, tama帽o del texto, etc
+\setlength{\headheight}{17pt} %
+\setlength{\oddsidemargin}{9pt} %
+\setlength{\topmargin}{0pt} %
+\setlength{\textheight}{650pt} %
+\setlength{\textwidth}{445pt} %
+\setlength{\marginparwidth}{60pt} %
+
+\usepackage[nottoc]{tocbibind}
+
+%Para encabezados y pies de p谩gina
+\usepackage{fancyhdr}
+
+% Para insertar c贸digo fuente desde archivos
+\usepackage{listings}
+
+% Definicion del "listings" para el lenguaje python
+\lstdefinelanguage{python}
+{
+ morecomment = [l]{\#}, 
+ morestring=[b]", 
+ sensitive = true,
+ morekeywords = {self, print, from, import, if, True, else, elif,
+   False, while, for, min, max, or, and, class, def, open, close,
+   read, readlines, write, len, range, append, return, function}
+}
+
+% Configuracion de la apariencia del codigo incluido
+\lstset{ %
+  language=python,
+  basicstyle=\scriptsize,
+  % numbers=left,
+  % numberstyle=\footnotesize,
+  % stepnumber=2,
+  % numbersep=5pt,
+  backgroundcolor=\color{white},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,
+  escapeinside={\#},
+  keywordstyle=\color[rgb]{0,0,1},
+  commentstyle=\color[rgb]{0.133,0.545,0.133},
+  stringstyle=\color[rgb]{0.627,0.126,0.941}
+}
+
+
+\headsep=8mm
+\footskip=14mm
+
+%%% Fancy Header %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Fancy Header Style Options
+\pagestyle{fancy}                       % Sets fancy header and footer
+\fancyfoot{}                            % Delete current footer settings
+\renewcommand{\chaptermark}[1]{         % Lower Case Chapter marker style
+   \markboth{\chaptername\ \thechapter.\ #1}{}} %
+\renewcommand{\sectionmark}[1]{         % Lower case Section marker style
+   \markright{\thesection.\ #1}}         %
+   \fancyhead[LE,RO]{\bfseries\thepage}    % Page number (boldface) in left on even
+                                           % pages and right on odd pages
+   \fancyhead[RE]{\bfseries\leftmark}      % Chapter in the right on even pages
+   \fancyhead[LO]{\bfseries\rightmark}     % Section in the left on odd pages
+   \renewcommand{\headrulewidth}{0.5pt}    % Width of head rule
+
+%Para los mini-铆ndices de cada cap铆tulo
+\usepackage{minitoc}
+\setcounter{minitocdepth}{2}         %defecto es 2
+\setlength{\mtcindent}{0pt}          %defecto es 24
+\renewcommand{\mtcfont}{\small\rm}   %defecto
+\renewcommand{\mtcSfont}{\small\bf}  %defecto
+\renewcommand{\mtcSSfont}{\small\rm} %defecto es \small\bf
+\renewcommand{\mtctitle}{En este cap韙ulo...}
+\nomtcpagenumbers %no poner n煤mero de p谩gina en mini-铆ndice
+% ------------------------------------------------------------------------------
+%Para la tabla de contenido general
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+% ------------------- Opciones espec铆ficas de este documento -----------------
+\usepackage{times}  % bookman | newcent | palatino | times
+
+\graphicspath{{imagenes/}}
+\input {latex_aux/ordenes.tex}
+
+% ----------------- Definimos el interlineado Base para todo el documento ------
+\newcommand{\interlineadoBase}{1.5}  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\interlineado{1.0}
+% -------------------------------------------  Creamos tablas de contenido -----
+\dominitoc[e] %el par谩metro indica la posici贸n del t铆tulo. r=right, n=e=empty
+
+% -----[x]------------- Orden auxiliar para escribir la minitoc ----------------
+\def\escribeMiniToc{
+    \interlineado{1.0}
+    \minitoc
+    \interlineado{\interlineadoBase}
+}
+
+\begin {document}
+
+  \thispagestyle{empty}
+  \vspace*{-2cm}
+\begin{center}
+  \vspace*{1.5cm}
+    \interlineado{2.0}
+    {\LARGE \textbf{UNIVERSIDAD DE CASTILLA-LA MANCHA\\ 
+        ESCUELA SUPERIOR DE INFORM脕TICA}}
+
+    \imagen{Ferrita}{6cm}{}{FIGlogouclm}
+
+    {\huge \textbf{INGENIER脥A EN INFORM脕TICA}}
+
+    \vspace*{1.5cm}
+    {\LARGE \textbf{Inteligencia Artificial e Ingenier铆a del Conocimiento}}
+
+    \vspace*{1.5cm}
+    {\huge Pr谩ctica 2: B煤squeda entre adversarios}
+    \interlineado{\interlineadoBase}
+  \vfill
+  \hfill
+\begin{flushright}
+  {\large Jose Domingo L贸pez L贸pez\\josed.lopez1@alu.uclm.es}
+
+  \vspace* {1.0cm}
+  {\large \the\day{} de \ifcase\month\or Enero\or Febrero\or Marzo\or Abril\or Mayo\or%
+    Junio\or Julio\or Agosto\or Septiembre\or Octubre\or Noviembre\or
+    Diciembre\fi{} de \the\year}
+\end{flushright}
+\end{center}
+                                % segunda pagina
+  \newpage
+\chapter*{}
+\thispagestyle{empty}  % Suprime la numeraci髇 de esta p醙ina
+\vspace{16cm}
+\begin{small}
+\copyright~ Jose Domingo L贸pez L贸pez. Se permite la copia, distribuci贸n y/o
+modificaci贸n de este documento bajo los t茅rminos de la licencia de
+documentaci贸n libre GNU, versi贸n 1.1 o cualquier versi贸n posterior publicada
+por la {\em Free Software Foundation}, sin secciones invariantes. Puede
+consultar esta licencia en http://www.gnu.org. \\[0.2cm]
+Este documento fue compuesto con \LaTeX{}. Im谩genes generadas con The GIMP.
+\end{small}
+
+\pagenumbering{Roman}  % --------------------- Numeraci髇 en romanos -----------
+
+\interlineado{1.0}
+\tableofcontents
+\mtcaddchapter
+% \listoffigures
+% \mtcaddchapter
+% \listoftables
+
+% --------------------------------------- Introducci髇 y Planteamiento ---------
+% ------------------------------------------------------------------------------
+
+\interlineado{\interlineadoBase}
+
+%\chapter{Introducci贸n}
+%\escribeMiniToc
+
+\pagenumbering{arabic}  % --------------------- Numeraci髇 en ar醔igos -----------
+\setcounter{page}{1}
+
+% Empezar el fichero con:
+% \section{Plantilla para el PFC}
+% y seguir con las correspondientes sub...section
+% \label {sec:etiqueta_identificativa}
+% \input {documentos/documento.tex}
+\label {sec:introduccion}
+\input {documentos/introduccion.tex}
+
+\label {sec:soluciones_teoricas}
+\input {documentos/soluciones_teoricas.tex}
+
+\label {sec:pruebas}
+\input {documentos/pruebas.tex}
+
+\label {sec:manual_usuario}
+\input {documentos/manual_usuario.tex}
+
+\label {sec:conclusiones}
+\input {documentos/conclusiones.tex}
+
+\label {sec:codigo_fuente}
+\input {documentos/codigo_fuente.tex}
+
+\renewcommand{\baselinestretch}{1}  %---- Modo de interlineado -------------
+\large\normalsize
+
+\bibliographystyle{plain} 
+\bibliography{Documentacion}
+
+\end{document}
+
+
+% ---------------- Ejemplo de c髆o insertar un PDF o una imagen ----------------
+% ------------------------------------------------------------------------------
+% \imagen{personajeEsqueleto}{14cm}{Imagen JPG de ejemplo}
+%        {FIGpersonaje}
+
+
+% ------------------------ Ejemplo de cita de un libro -------------------------
+% ------------------------------------------------------------------------------
+% \cite{id_del_bibitem}
+
+
+% --------------------- Ejemplo de referencia a una imagen ---------------------
+% ------------------------------------------------------------------------------
+% (ver imagen \ref{'label_de_la_imagen'}), n髏ese el uso de comillas simples
+
+
+% ------------------------- Insertar el logo de LaTeX --------------------------
+% ------------------------------------------------------------------------------
+% \LaTeX{}
+
+
+% -- Ejemplos de ecuaciones (n贸tese el $ al final y al inicio de la ecuaci贸n)---
+% ------------------------------------------------------------------------------
+% $x^2+y^2=1$
+
+% \begin{eqnarray} \label{EQContinueLingLabel}
+% \sum_{SA^{i}_{j} \in SA_{j}}\mu_{SA^{i}_{j}}(x)=1
+% \end{eqnarray}
+
+% $X_{j}$
+
+% Para citar una ecuaci贸n se har谩 mediante \ref{EQContinueLingLabel},
+% sin comillas
+
+% --------------------------- Ejemplo para insertar c贸digo fuente --------------
+% ------------------------------------------------------------------------------
+% \texttt{
+% \lstinputlisting{../src/casilla.py}}

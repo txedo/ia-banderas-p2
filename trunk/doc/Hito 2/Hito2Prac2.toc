@@ -1,0 +1,11 @@
+\select@language {spanish}
+\contentsline {section}{\numberline {1}Clase Casilla}{2}
+\contentsline {section}{\numberline {2}Clase Cliente}{3}
+\contentsline {section}{\numberline {3}Clase Equipo}{7}
+\contentsline {section}{\numberline {4}Clase Estado}{8}
+\contentsline {section}{\numberline {5}Clase Jugador}{10}
+\contentsline {section}{\numberline {6}Clase Minimax}{13}
+\contentsline {section}{\numberline {7}Clase Nodo}{16}
+\contentsline {section}{\numberline {8}Clase Tablero}{17}
+\contentsline {section}{\numberline {9}Constantes}{21}
+\contentsline {section}{\numberline {10}Variables globales}{22}

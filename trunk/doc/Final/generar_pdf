@@ -1,0 +1,5 @@
+#!/bin/bash
+pdflatex Documentacion.tex 
+bibtex Documentacion
+pdflatex Documentacion.tex 
+pdflatex Documentacion.tex 

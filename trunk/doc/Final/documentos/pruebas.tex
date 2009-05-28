@@ -1,0 +1,103 @@
+\chapter {Pruebas}
+\label {pruebas}
+\section {Detección de estados repetidos}
+Como ya se comentó en la sección \ref{sec:estadosrepetidos} se ha
+tratado de realizar un control sobre los estados repetidos. Se trata
+de una característica importante porque en este tipo de problemas el
+número de estados a expandir y examinar crece exponencialmente y, si
+evitamos situaciones iguales podemos reducir drásticamente este
+espacio de búsqueda.
+
+Mantener una estructura de datos que almacene los nodos que ya hemos
+expandido o examinado no sólo es costoso en términos de memoria si no
+que también lo es en términos de tiempo. No obstante, dado que los
+turnos están limitados por tiempo, la memoria no será un problema a no
+ser que los turnos sean lo suficientemente largos como para generar
+una grandísima cantidad de nodos. Por ello, nos hemos centrado en la
+optimización de tiempo por medio de dos técnicas:
+\begin{itemize}
+\item Una lista.
+\item Un diccionario simulando una tabla hash.
+\end{itemize}
+
+Inicialmente y sabiendo que era la peor solución, se trató de resolver
+el problema mediante una lista de estados. La peor parte de esta
+solución viene dada cuando la lista contiene miles de elementos y
+queremos comprobar si un estado ya está contenido en la lista. La
+comparación de estos elementos uno a uno es muy tediosa ya que
+interviene un gran número de atributos (de casillas, jugadores,
+equipos...) y hay que realizar esta operación miles de veces. Tras
+realizar las pruebas pertinentes, se comprobó que no obteníamos
+mejores niveles de profundidad y que en ocasiones éstos empeoraban.
+
+Por último, se trató de implementar una tabla hash por medio de un
+diccionario. Esta solución parece más práctica puesto que dado un
+identificador, podemos acceder a ese elemento directamente. El
+problema está en qué identificador utilizar. Se ha tratado de
+identificar cada estado mediante una máscara formada por las
+características del estado, es decir, una cadena de dígitos que
+representan las casillas, los jugadores, los equipos, etc. pero, a
+parte de ser un método que puede llevar a confusión en la
+identificación de estados, no ha dado los resultados esperados en
+cuanto a los niveles de profundidad alcanzados en la búsqueda. Éstos
+son similares a los obtenidos sin controlar los estados repetidos dada
+la poca duración de los turnos.
+
+En conclusión, esta característica ha sido contemplada, estudiada y
+rechazada.
+
+\section {Resultados prácticos}
+A continuación se comentarán los resultados prácticos obtenidos
+durante la ejecución de las pruebas del programa en las distintas
+fases de desarrollo de la heurística. Los escenarios de prueba han
+sido los mapas \emph{Mapas de pruebas mejor} y \emph{Mapa},
+disponibles en la página web de la asignatura.
+
+\subsection{Primera iteración}
+Esta primera iteración corresponde con la heurística desarrollada en
+la primera aproximación (ver sección \ref{sec:distancias}).
+
+Tras una serie de tests y ajustes, el comportamiento del bot era el
+esperado en mapas de dimensiones reducidas: los jugadores se
+aproximaban a las banderas hasta capturarlas. En mapas de dimensiones
+algo mayores, los jugadores hacían movimientos sin control debido a
+que los parámetros que condicionan las funciones \ref{'funcexp'} y
+\ref{'funclineal'} no habían sido ajustados. La consecuencia de esto
+es que un estado con una distancia mínima de 6 obtenía la misma
+valoración que otro estado con una distancia mínima de 10, cuando éste
+segundo estado es claramente peor.
+
+\subsection{Segunda iteración}
+En esta segunda iteración, que corresponde con la segunda aproximación
+de la heurística (ver sección \ref{sec:bondades}), se hicieron un
+cálculos sencillos para determinar los valores que pueden tomar los
+parámetros que condicionan las funciones \ref{'funcexp'} y
+\ref{'funclineal'} para que éstas valoren bien las distancias
+cualesquiera que sean las dimensiones del tablero.
+
+Los resultados obtenidos fueron los esperados: se ha resuelto en
+problema que se planteaba en la primera iteración cuando las
+dimensiones del mapa eran lo suficientemente grandes. En este momento,
+los jugadores ya se dirigen a las banderas y las capturan,
+independientemente de las dimensiones del tablero.
+
+\subsection{Tercera iteración}
+Esta tercera iteración, que corresponde con la tercera aproximación de
+la heurística (ver sección \ref{sec:blacklist}), ha sido la más
+compleja de testear y depurar para obtener los resultados
+esperados. No obstante, se ha logrado dotar a los jugadores con algo
+más de inteligencia para que éstos solo traten de capturar banderas
+que, en la medida de lo posible, tienen probabilidades de capturar,
+es decir, no compiten por banderas que es seguro que no van a poder
+capturar porque el contrincante las capturará antes.
+
+\subsection{Cuarta iteración}
+Esta iteración se correponde con la cuarta aproximación de la
+heurística (ver sección \ref{sec:energia}). Los resultados obtenidos
+eran los esperados si el nivel de profundidad al que se llegaba en la
+búsqueda era el adecuado ya que los jugadores se movían por los
+caminos menos costosos, pero si no se alcanzaba la profundidad
+adecuada, ahorrar energía podía suponer aumentar la longitud del
+camino y perder una bandera y, en el peor de los casos, perder la
+partida. Para evitar este tipo de situaciones, esta característica ha
+sido suprimda de la heurística.

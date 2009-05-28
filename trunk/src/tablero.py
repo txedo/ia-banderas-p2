@@ -120,27 +120,10 @@ class Tablero:
         return cas
     
     
-    def casillasVecinas (self, casillasActuales, casilla):
-        """ RECIBE la lista de casillas actuales del tablero y el identificador
-        de la casilla de la cual queremos obtener las casillas vecinas.
-            DEVUELVE las 6 casillas vecinas en el tablero actual
-        """
-        # Obtenemos los identificadores de las casillas vecinas
-        idVecinas = self.idCasillasVecinas(casilla)
-        # Construimos las casillas vecinas actuales
-        casillasVecinas = []
-        for i in idVecinas:
-            cas = Casilla (i, casillasActuales[i - 1].getTipo())
-            casillasVecinas.append (cas)
-        return casillasVecinas
-    
-    
     def casillasVecinasActuales (self, idCasilla):
         """ RECIBE el identificador de la casilla sobre la cual queremos calcular
         las casillas vecinas actuales.
             DEVUELVE las 6 casllas vecinas actuales
-            Utilizar esta funcion es mejor que llamar a tableroActual y luego
-            llamar a casillasVecinas.
         """
         # Obtenemos los identificadores de las casillas vecinas
         idVecinas = self.idCasillasVecinas(idCasilla)
@@ -153,14 +136,6 @@ class Tablero:
                 cas.setTipo(self.casillasModificadas[indice].getTipo())
             casillasVecinas.append(cas)
         return casillasVecinas
-    
-    
-    def tableroActual (self):
-        """ DEVUELVE una lista con las casillas del tablero actual """
-        casillas = global_vars.casillasIniciales[:]
-        for i in range(len(self.getCasillasModificadas())):
-            casillas[self.casillasModificadas[i].getIdCasilla()-1] = self.casillasModificadas[i]
-        return casillas
     
     
     def __WayTrackingBack (self, k, idCasillaDestino, calculadas, filas, columnas, casillasTablero, distancias):
@@ -177,6 +152,7 @@ class Tablero:
      
      
     def WayTracking (self, idCasillaDestino):
+        # Este algoritmo solo es util en un medio completamente observable
         columnas = global_vars.columnasTablero
         filas = global_vars.filasTablero
         casillas = global_vars.casillasIniciales[:]
@@ -184,8 +160,6 @@ class Tablero:
         distancias = []
         for i in range(filas*columnas):
             distancias.append(INFINITO)
-            #casillas.append(Casilla(i+1,1))                            #test
-        #ponerMurallas(casillas)                                        #test
         # Etiqueto la casilla de la bandera con distancia 0
         calculadas = 1
         distancias[idCasillaDestino-1] = 0
@@ -194,7 +168,6 @@ class Tablero:
             if i.tipo == T_MURALLA:
                 distancias[i.idCasilla-1] = -1
                 calculadas += 1
-        #Imprimir (distancias)                                                   #test
         self.__WayTrackingBack(0, idCasillaDestino, calculadas, filas, columnas, casillas, distancias)
         return distancias
     

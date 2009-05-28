@@ -93,28 +93,6 @@ class Estado:
         return bloqueado
         
     
-    #def minimaDistancia (self, eq, blacklist=[]):#, a=0):
-    #    """ RECIBE el identificador de equipo que hay que examinar
-    #        DEVUELVE una tupla (idJugador, bandera, distancia)
-    #    """
-    #    equipo = self.equipos[eq]
-    #    minimaDistancia = INFINITO
-   #     jugador = -1
-    #    bandera = -1
-    #    for band in global_vars.banderasObjetivo:
-    #        if band not in blacklist:
-   #             if self.tablero.casillaActual(band).getTipo() == T_BANDERA:
-    #                distancias = global_vars.distanciaBanderas[band] #diccionario de listas de distancias
-    #                for jug in equipo.jugadores:
-    #                    if not self.jugadorBloqueado(jug):
-    #                        dist = distancias[jug.casilla-1]
-    #                        #if a==1: print "dist del jugador %d a la bandera %d es %d" %(jug.idJugador, band, dist)
-    #                        if dist < minimaDistancia:
-    #                            minimaDistancia = dist
-    #                            jugador = jug.idJugador
-    #                            bandera = band
-    #    return (jugador, bandera, minimaDistancia)
-    
     def minimaDistancia (self, eq):
         """ RECIBE el identificador de equipo que hay que examinar
             DEVUELVE una tupla (idJugador, bandera, distancia)
@@ -129,7 +107,6 @@ class Estado:
                 for jug in equipo.jugadores:
                     if not self.jugadorBloqueado(jug):
                         dist = distancias[jug.casilla-1]
-                        #if a==1: print "dist del jugador %d a la bandera %d es %d" %(jug.idJugador, band, dist)
                         if dist < minimaDistancia:
                             minimaDistancia = dist
                             jugador = jug.idJugador

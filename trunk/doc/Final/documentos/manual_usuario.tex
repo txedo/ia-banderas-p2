@@ -1,0 +1,88 @@
+\chapter {Manual de Usuario}
+
+En esta sección se darán unas breves nociones de cuál es el contenido
+de la práctica, qué es necesario instalar en el sistema para poder
+ejecutarla y cómo ejecutarla.
+
+\section{Organización de directorios}
+La práctica se distribuye en un fichero con extensión \emph{.tar.gz}
+que contiene cinco directorios:
+\begin{itemize}
+\item \textbf{config}. Contiene un fichero \emph{config.client}
+  empleado por el middleware de comunicaciones ICE. Se recomienda no
+  modificar este fichero.
+\item \textbf{doc}. Contiene la documentación de la práctica así como
+  las imágenes utilizadas.
+\item \textbf{exec}. Contiene dos scripts bash \emph{run} y \emph{kill}.
+  \begin{itemize}
+  \item \textbf{run}. Admite un parámetro que es un número entero en
+    el cual se indica el número de jugadores que van a competir (1 si
+    es una partida individual y 2 si se trata de una competición). Si
+    no se suministra este parámetro, se mostará un mensaje de
+    ayuda. Ejemplo de uso: \emph{./run 1}
+  \item \textbf{kill}. Su ejecución no admite ningún parámetro
+    (\emph{./kill}). Consiste en una tubería compuesta mediante las
+    utilidades \emph{ps}, \emph{grep} y \emph{awk} que obtiene los
+    \emph{PID} de los clientes en ejecución y los mata. Es un script
+    muy cómodo en el proceso de depuración de clientes.
+  \end{itemize}
+\item \textbf{slice}. Contiene un fichero \emph{Practica.ice} que
+  indica los tipos de datos e interfaces públicos del servidor ICE de
+  la práctica.
+\item \textbf{src}. Contiene todos los ficheros que forman parte del
+  código fuente de la práctica. Se puede observar un fichero para cada
+  clase y dos ficheros (global-vars.py y config.py) que definen las
+  variables globales y las constantes.
+\end{itemize}
+
+\section {Instalación}
+Antes de ejecutar la práctica hay que instalar tres componentes en el
+sistema:
+\begin{itemize}
+\item \textbf{python} \cite{python}. Es el intérprete de python.
+\item \textbf{psyco} \cite{psyco}. Es un compilador en tiempo de ejecución
+  especializado para python. Psyco puede acelerar notablemente
+  aplicaciones que hacen un uso intensivo de la CPU. El rendimiento
+  actual depende de forma importante de la aplicación y pueden
+  aumentarse hasta 40 veces, aunque la mejora de rendimiento media es
+  aproximadamente de 4x. Puede descargarlo de 
+\item \textbf{ZeroC Ice} \cite{zeroc}. Runtime del middleware de comunicaciones
+  empleado por el cliente y el servidor de la práctica.
+\end{itemize}
+Si se goza de una distribución GNU/Linux basada en debian
+simplemente hay que instalar los metapaquetes \textbf{python},
+\textbf{python-psyco} y \textbf{zeroc-ice33}
+
+\section {Ejecución}
+Para poder ver como juega el \emph{bot} es necesario configurar la
+partida en la web de la asignatura \cite{webia} siguiendo los
+siguientes pasos:
+\begin{enumerate}
+\item Abrir la página de la asignatura \cite{webia}.
+\item Introducir en la parte superior derecha nuestro login (DNI) y
+  password para realizar la autenticación e iniciar una sesión.
+\item Clickar en \textbf{Partida Activa} para acceder al panel de
+  configuración de partidas (ver figura \ref{'paneladmon'}) si no hay ninguna partida creada, o
+  visualizar la partida en curso.
+\imagen{webia_panel_admon}{14cm}{Panel de Administración}{paneladmon}
+\item Si queremos crear una partida: elegimos el mapa, el tiempo por
+  turno y el modo de juego (individual o competición); si por el
+  contrario queremos unirnos a una partida ya creada (modo
+  competición), elegimos a qué partida deseamos unirnos.
+\end{enumerate}
+
+Una vez que clickemos en \textbf{Aceptar} y ya tenemos configurada nuestra
+partida. Ahora tenemos que ejecutar el cliente para conectarnos al
+servidor. Para ello seguimos la siguiente secuencia de pasos:
+\begin{enumerate}
+\item Descomprimimos la práctica con el comando \emph{tar xvfz
+    fichero-practica.tar.gz}.
+\item Nos situamos en el directorio \emph{exec}.
+\item Si vamos a jugar una partida invididual ejecutamos el script
+  \emph{run} con el argumento \emph{1}. Abrimos otro terminal y
+  repetimos este mismo paso; Si por el contrario vamos a jugar una
+  partida en modo competición, ejecutamos el script \emph{run} con el
+  argumento \emph{2}.
+\item El programa conectará con el servidor y cuando ambos jugadores
+  estén conectados lanzarán sus algoritmos minimax y comenzarán la partida.
+\end{enumerate}

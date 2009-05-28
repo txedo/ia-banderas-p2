@@ -1,0 +1,80 @@
+%% PREÁMBULO DEL DOCUMENTO
+
+\documentclass [a4paper, titlepage] {article} %% Tipo del documento (article,book,report)
+\usepackage [spanish] {babel} %% Titulos de los capitulos en Español
+\usepackage [T1] {fontenc}
+\usepackage [latin1] {inputenc} %% Soporte tildes, ñ (NO comillas) y separacion palabras
+\usepackage {array}
+\usepackage {booktabs}
+\usepackage {tabulary}
+\usepackage {longtable}
+\usepackage {dingbat}
+\usepackage {multicol}
+\usepackage {graphicx}
+\usepackage {fancyhdr}
+\usepackage {multirow}
+\usepackage {colortbl}
+\usepackage {textcomp}
+% Usamos el paquete listing para insertar codigo fuente de un archivo
+\usepackage{listings}
+\usepackage{color}
+\usepackage{textcomp}
+
+% Márgenes del documento
+\topmargin=-0.5cm
+\textwidth=15cm
+\textheight=22.5cm
+\oddsidemargin=0.5cm
+
+
+\setlength{\pdfpagewidth}{\paperwidth}
+\setlength{\pdfpageheight}{\paperheight}
+
+
+% Definicion del "listings" para el lenguaje C#
+\lstdefinelanguage{python}
+{
+ morecomment = [l]{\#}, 
+ morestring=[b]", 
+ sensitive = true,
+ morekeywords = {self, print, from, import, if, True, else, elif,
+   False, while, for, min, max, or, and, class, def, open, close,
+   read, readlines, write, len, range, append, return, function}
+}
+
+% Configuracion de la apariencia del codigo incluido
+\lstset{ %
+  language=python,
+  basicstyle=\footnotesize,
+  % numbers=left,
+  % numberstyle=\footnotesize,
+  % stepnumber=2,
+  % numbersep=5pt,
+  backgroundcolor=\color{white},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,
+  escapeinside={\#},
+  keywordstyle=\color[rgb]{0,0,1},
+  commentstyle=\color[rgb]{0.133,0.545,0.133},
+  stringstyle=\color[rgb]{0.627,0.126,0.941}
+}
+
+\begin{document}
+\texttt{
+\lstinputlisting{../src/casilla.py}
+\lstinputlisting{../src/client.py}
+\lstinputlisting{../src/config.py}
+\lstinputlisting{../src/equipo.py}
+\lstinputlisting{../src/estado.py}
+\lstinputlisting{../src/global_vars.py}
+\lstinputlisting{../src/jugador.py}
+\lstinputlisting{../src/minimax.py}
+\lstinputlisting{../src/nodo.py}
+\lstinputlisting{../src/tablero.py}}
+\end{document}

@@ -1,0 +1,125 @@
+\documentclass[a4paper,12pt,titlepage]{article}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[latin1]{inputenc} %% Soporte tildes, ñ (NO comillas) y separacion palabras
+\usepackage{listings}
+\usepackage{color}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+
+% Comandos para definir lineas del encabezado y pie de pagina
+\renewcommand{\headrule}{\hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+% Márgenes del documento
+\topmargin=-0.5cm
+\textwidth=15cm
+\textheight=22.5cm
+\oddsidemargin=0.5cm
+ 
+ 
+\setlength{\pdfpagewidth}{\paperwidth}
+\setlength{\pdfpageheight}{\paperheight}
+ 
+% Definicion del "listings" para el lenguaje python
+\lstdefinelanguage{python}
+{
+ morecomment = [l]{\#}, 
+ morestring=[b]", 
+ sensitive = true,
+ morekeywords = {self, print, from, import, if, True, else, elif, False, while, for, min, max, or, and, class, def, open, close, read, readlines, write, len, range, append, return}
+}
+
+
+%%Portada
+\pagestyle{fancy}
+\title{\textrm{\textbf{\textsc{Inteligencia Artificial}}}\\
+\textsf{Segunda Práctica. Hito 2: Algoritmo Minimax y poda alfa-beta}}
+\author{Jose Domingo López López\\}
+ 
+%% Encabezado y pie de página
+\fancyhead[L]{\sc \small Búsqueda entre adversarios. Hito 2}
+\fancyhead[R]{}
+\fancyfoot[L]{\small Jose Domingo López López}
+\fancyfoot[R]{\thepage}
+\fancyfoot[C]{}
+
+
+% Configuracion de la apariencia del codigo incluido
+\lstset{ %
+  language=python,
+  basicstyle=\scriptsize,
+  % numbers=left,
+  % numberstyle=\footnotesize,
+  % stepnumber=2,
+  % numbersep=5pt,
+  backgroundcolor=\color{white},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,   
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,
+  escapeinside={\#},
+  keywordstyle=\color[rgb]{0,0,1},
+  commentstyle=\color[rgb]{0.133,0.545,0.133},
+  stringstyle=\color[rgb]{0.627,0.126,0.941}
+}
+
+\begin{document}
+
+%% Imagen de la portada
+\begin{figure}[t]
+\centering
+\includegraphics[width=6cm]{Ferrita}
+\end{figure}
+
+\maketitle
+
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+
+\section{Clase Casilla}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/casilla.py}}
+
+\newpage
+\section{Clase Cliente}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/client.py}}
+
+\newpage
+\section{Clase Equipo}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/equipo.py}}
+
+\newpage
+\section{Clase Estado}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/estado.py}}
+
+\newpage
+\section{Clase Jugador}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/jugador.py}}
+
+\newpage
+\section{Clase Minimax}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/minimax.py}}
+
+\newpage
+\section{Clase Nodo}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/nodo.py}}
+
+\newpage
+\section{Clase Tablero}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/tablero.py}}
+
+\newpage
+\section{Constantes}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/config.py}}
+
+\newpage
+\section{Variables globales}
+\texttt{\lstinputlisting[inputencoding=latin1]{../src/global_vars.py}}
+
+\end{document}

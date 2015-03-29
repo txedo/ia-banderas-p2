@@ -1,0 +1,1 @@
+Realizar un bot (agente racional) que pueda jugar de forma autónoma contra un adversario, permitiendo la posibilidad de realizar una pequeña competición. La estrategia de juego será dirigida por un algoritmo Mini-Max con poda alfa-beta.
